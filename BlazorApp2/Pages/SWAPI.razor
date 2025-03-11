@@ -71,8 +71,8 @@
 
 @code {
 
-    private Person _selectedPerson = null;
-    private void ToggleDetails(Person person)
+    private People _selectedPerson = null;
+    private void ToggleDetails(People person)
     {
         _selectedPerson = (_selectedPerson == person) ? null : person;
     }
@@ -80,7 +80,7 @@
     private string _inputFilterName;
     private string _inputFilterHeight;
     private string _inputFilterMass;
-    private List<Person> _personList = new();
+    private List<People> _personList = new();
 
     protected override async Task OnInitializedAsync()
     {

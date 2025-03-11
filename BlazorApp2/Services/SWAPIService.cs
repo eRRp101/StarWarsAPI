@@ -12,23 +12,52 @@ namespace BlazorApp2.Services
     {
         private static readonly HttpClient _httpClient = new HttpClient();
         private readonly string _apiBaseUrl = "https://swapi.dev/api/";
+        private readonly string _pagesBaseUrl = "https://swapi.dev/api/people/?page=1";
 
-        public async Task<List<Person>> GetPeopleList()
+        public async Task<List<People>> GetPeopleList()
         {
-            HttpResponseMessage reponse = await _httpClient.GetAsync(_apiBaseUrl + "people");
+            List<People> persons = new List<People>();
 
-            if (reponse.IsSuccessStatusCode)
+            HttpResponseMessage response = await _httpClient.GetAsync(_apiBaseUrl + "people");
+            string responseBody = await response.Content.ReadAsStringAsync();
+
+            if (response.IsSuccessStatusCode)
             {
-                string responseBody = await reponse.Content.ReadAsStringAsync();
-                PersonWrapper person = JsonSerializer.Deserialize<PersonWrapper>(responseBody);
-                return person.PersonList;
+                using (_httpClient.GetAsync(_pagesBaseUrl))
+                {
+                    SWAPIpage pages = JsonSerializer.Deserialize<SWAPIpage>(responseBody);
+
+                    while (pages.NextPage != null)
+                    {
+                        response = await _httpClient.GetAsync(pages.NextPage);
+                        if (response.IsSuccessStatusCode)
+                        {
+                            pages = JsonSerializer.Deserialize<SWAPIpage>(responseBody);
+
+                            PersonWrapper personWrapper = JsonSerializer.Deserialize<PersonWrapper>(responseBody);
+                            persons.AddRange(personWrapper.PersonList);
+
+                            responseBody = await response.Content.ReadAsStringAsync();
+                            pages = JsonSerializer.Deserialize<SWAPIpage>(responseBody);
+                        }
+                    }
+                }
+                return persons;
             }
-            return new List<Person>();
+            return new List<People>();
+
+            //if (peopleReponse.IsSuccessStatusCode)
+            //{
+            //    string responseBody = await peopleReponse.Content.ReadAsStringAsync();
+            //    PersonWrapper person = JsonSerializer.Deserialize<PersonWrapper>(responseBody);
+            //    return person.PersonList;
+            //}
+            //return new List<Person>();
         }
 
-        public async Task<List<Person>> FilterPeopleList(string userInput, string filterField)
+        public async Task<List<People>> FilterPeopleList(string userInput, string filterField)
         {
-            List<Person> person = await GetPeopleList();
+            List<People> person = await GetPeopleList();
             var trimmedUserInput = userInput?.Trim() ?? string.Empty;
 
             switch (filterField)
@@ -48,7 +77,7 @@ namespace BlazorApp2.Services
                         .Where(p => p.Mass.IndexOf(trimmedUserInput, StringComparison.OrdinalIgnoreCase) >= 0)
                         .ToList();
                 default:
-                    return new List<Person>();
+                    return new List<People>();
             }
         }
         
