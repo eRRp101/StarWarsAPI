@@ -12,27 +12,27 @@
         <tr>
             <th>
                 <input class="form-control mb-3"
-                type="text" style="text-align:center"
-                @bind="_inputFilterName"
-                @bind:event="oninput"
-                @bind:after="UpdateNameSearchAsync"
-                placeholder="Filter name..." />
+                       type="text" style="text-align:center"
+                       @bind="_inputFilterName"
+                       @bind:event="oninput"
+                       @bind:after="UpdateNameSearchAsync"
+                       placeholder="Filter name..." />
             </th>
             <th>
                 <input class="form-control mb-3"
-                type="text"
-                @bind="_inputFilterHeight"
-                @bind:event="oninput"
-                @bind:after="UpdateHeightSearchAsync"
-                placeholder="Filter height..." />
+                       type="text"
+                       @bind="_inputFilterHeight"
+                       @bind:event="oninput"
+                       @bind:after="UpdateHeightSearchAsync"
+                       placeholder="Filter height..." />
             </th>
             <th>
                 <input class="form-control mb-3"
-                type="text"
-                @bind="_inputFilterMass"
-                @bind:event="oninput"
-                @bind:after="UpdateMassSearchAsync"
-                placeholder="Filter mass..." />
+                       type="text"
+                       @bind="_inputFilterMass"
+                       @bind:event="oninput"
+                       @bind:after="UpdateMassSearchAsync"
+                       placeholder="Filter mass..." />
             </th>
         </tr>
     </thead>
@@ -40,12 +40,19 @@
 
 <hr class="border-primary" />
 
+@* --- Loading --- *@
 @if (isLoading)
 {
     <div class="text-center">
-        <div class="spinner-border" role="status">
-            <span class="visually-hidden">Loading</span>
-        </div>
+        <div class="spinner-border" role="status" />
+        <div>Fetching Data</div>
+    </div>
+}
+@if (IsFiltering)
+{
+    <div class="text-center">
+        <div class="spinner-border" role="status" />
+        <div>Filtering Data.. You can Keep typing!</div>
     </div>
 }
 
@@ -70,7 +77,7 @@
                 <tr>
                     <td colspan="3" class="border border-dark border-1 rounded-3">
                         @*  Information om onclick række/person *@
-                        <div class="p-3 bg-light text-dark">
+                        <div class="p-3 bg-light text-dark fade-in">
                             @person.Name is a @person.Height cm tall @person.Gender, born in @person.BirthYear.
                             Characteristics include @person.HairColor hair, @person.EyeColor eyes, and a @person.SkinColor skin color.
                         </div>
@@ -88,18 +95,18 @@
 </div>
 
 @code {
-    //Paginering
-    private int PageSize { get; set; } = 10;  
+    //Pagination
+    private int PageSize { get; set; } = 10;
     private int CurrentPage { get; set; } = 1;
     private List<People> _paginatedPersonList = new();
     private bool CanGoToPreviousPage => CurrentPage > 1;
     private bool CanGoToNextPage => CurrentPage < TotalPages;
-    private int TotalPages => (int)Math.Ceiling((double)_personList.Count / PageSize);
+    private int TotalPages => (int)Math.Ceiling((double)_filteredPersonList.Count / PageSize);
 
     private void LoadPage(int pageNumber)
     {
         var skip = (pageNumber - 1) * PageSize;
-        _paginatedPersonList = _personList.Skip(skip).Take(PageSize).ToList();
+        _paginatedPersonList = _filteredPersonList.Skip(skip).Take(PageSize).ToList();
     }
 
     private void NextPage()
@@ -120,40 +127,54 @@
         }
     }
 
-    //Tabel detaljer toggle
+    //Onclick row toggle
     private People _selectedPerson = null;
     private void ToggleDetails(People person)
     {
         _selectedPerson = (_selectedPerson == person) ? null : person;
     }
 
-    //
     bool isLoading = false;
+    bool IsFiltering = false;
     private string _inputFilterName;
     private string _inputFilterHeight;
     private string _inputFilterMass;
     private List<People> _personList = new();
+    private List<People> _filteredPersonList = new();
 
     protected override async Task OnInitializedAsync()
     {
         isLoading = true;
         _personList = await _swapiService.GetPeopleList();
+        _filteredPersonList = new List<People>(_personList); 
         LoadPage(CurrentPage);
         isLoading = false;
         await base.OnInitializedAsync();
     }
 
-    //Søgnings filtre
+    //Search Filters
     private async Task UpdateNameSearchAsync()
     {
-        _paginatedPersonList = await _swapiService.FilterPeopleList(_inputFilterName, "name");
+        IsFiltering = true;
+        _filteredPersonList = await _swapiService.FilterPeopleList(_inputFilterName, "name");
+        CurrentPage = 1; 
+        LoadPage(CurrentPage); 
+        IsFiltering = false;
     }
     private async Task UpdateHeightSearchAsync()
     {
-        _paginatedPersonList = await _swapiService.FilterPeopleList(_inputFilterHeight, "height");
+        IsFiltering = true;
+        _filteredPersonList = await _swapiService.FilterPeopleList(_inputFilterHeight, "height");
+        CurrentPage = 1;
+        LoadPage(CurrentPage);
+        IsFiltering = false;
     }
     private async Task UpdateMassSearchAsync()
     {
-        _paginatedPersonList = await _swapiService.FilterPeopleList(_inputFilterMass, "mass");
+        IsFiltering = true;
+        _filteredPersonList = await _swapiService.FilterPeopleList(_inputFilterMass, "mass");
+        CurrentPage = 1;
+        LoadPage(CurrentPage);
+        IsFiltering = false;
     }
 }

@@ -12,7 +12,6 @@ namespace BlazorApp2.Services
     {
         private static readonly HttpClient _httpClient = new HttpClient();
         private readonly string _apiBaseUrl = "https://swapi.dev/api/";
-        private readonly string _pagesBaseUrl = "https://swapi.dev/api/people/?page=1";
 
         public async Task<List<People>> GetPeopleList()
         {
@@ -23,36 +22,34 @@ namespace BlazorApp2.Services
 
             if (response.IsSuccessStatusCode)
             {
-                using (_httpClient.GetAsync(_pagesBaseUrl))
-                {
-                    SWAPIpage pages = JsonSerializer.Deserialize<SWAPIpage>(responseBody);
+                SWAPIpage pages = JsonSerializer.Deserialize<SWAPIpage>(responseBody);
 
-                    while (pages.NextPage != null)
+                do
+                {
+                    PersonWrapper personWrapper = JsonSerializer.Deserialize<PersonWrapper>(responseBody);
+                    persons.AddRange(personWrapper.PersonList);
+
+                    if (!string.IsNullOrEmpty(pages.NextPage))
                     {
                         response = await _httpClient.GetAsync(pages.NextPage);
+                        responseBody = await response.Content.ReadAsStringAsync(); 
+
                         if (response.IsSuccessStatusCode)
                         {
-                            pages = JsonSerializer.Deserialize<SWAPIpage>(responseBody);
-
-                            PersonWrapper personWrapper = JsonSerializer.Deserialize<PersonWrapper>(responseBody);
-                            persons.AddRange(personWrapper.PersonList);
-
-                            responseBody = await response.Content.ReadAsStringAsync();
-                            pages = JsonSerializer.Deserialize<SWAPIpage>(responseBody);
+                            pages = JsonSerializer.Deserialize<SWAPIpage>(responseBody); 
+                        }
+                        else
+                        {
+                            break; 
                         }
                     }
-                }
-                return persons;
+                    else
+                    {
+                        break; 
+                    }
+                } while (pages.NextPage != null);
             }
-            return new List<People>();
-
-            //if (peopleReponse.IsSuccessStatusCode)
-            //{
-            //    string responseBody = await peopleReponse.Content.ReadAsStringAsync();
-            //    PersonWrapper person = JsonSerializer.Deserialize<PersonWrapper>(responseBody);
-            //    return person.PersonList;
-            //}
-            //return new List<Person>();
+            return persons;
         }
 
         public async Task<List<People>> FilterPeopleList(string userInput, string filterField)
