@@ -2,7 +2,7 @@
 
 namespace BlazorApp2.Model
 {
-    public class Person 
+    public class People 
     {
         [JsonPropertyName("name")]
         public string Name { get; set; }
@@ -34,16 +34,8 @@ namespace BlazorApp2.Model
 
     public class PersonWrapper : IWrapper
     {
-        [JsonPropertyName("next")]
-        public string NextPage { get; set; }
-
-        [JsonPropertyName("previous")]
-        public string PreviousPage { get; set; }
-
-        [JsonPropertyName("count")]
-        public string PageCount { get; set; }
 
         [JsonPropertyName("results")]
-        public List<Person> PersonList { get; set; }
+        public List<People> PersonList { get; set; }
     }
 }

@@ -1,21 +1,5 @@
 @import url('open-iconic/font/css/open-iconic-bootstrap.min.css');
 
-.fadeAnimation {
-    opacity: 1;
-    animation: fade 2s linear;
-}
-
-
-@keyframes fade {
-    0%,100% {
-        opacity: 0
-    }
-
-    50% {
-        opacity: 1
-    }
-}
-
 html, body {
     font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;
 }

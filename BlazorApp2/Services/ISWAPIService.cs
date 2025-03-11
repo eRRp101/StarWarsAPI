@@ -4,7 +4,7 @@ namespace BlazorApp2.Services
 {
     public interface ISWAPIService
     {
-        public Task<List<Person>> GetPeopleList();
-        public Task<List<Person>> FilterPeopleList(string userInput, string filterField);
+        public Task<List<People>> GetPeopleList();
+        public Task<List<People>> FilterPeopleList(string userInput, string filterField);
     }
 }
