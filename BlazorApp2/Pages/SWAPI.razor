@@ -1,0 +1,107 @@
+﻿@page "/SWAPI"
+@inject ISWAPIService _swapiService;
+@using BlazorBootstrap;
+
+<PageTitle>Star Wars Characters</PageTitle>
+
+<h1 class="text-center">Star Wars Characters</h1>
+
+<table class="table table-striped">
+    <thead>
+        <tr>
+            <th>
+                <input class="form-control mb-3"
+                type="text" style="text-align:center"
+                @bind="_inputFilterName"
+                @bind:event="oninput"
+                @bind:after="UpdateNameSearchAsync"
+                placeholder="Filter name..." />
+            </th>
+            <th>
+                <input class="form-control mb-3"
+                type="text"
+                @bind="_inputFilterHeight"
+                @bind:event="oninput"
+                @bind:after="UpdateHeightSearchAsync"
+                placeholder="Filter height..." />
+            </th>
+            <th>
+                <input class="form-control mb-3"
+                type="text"
+                @bind="_inputFilterMass"
+                @bind:event="oninput"
+                @bind:after="UpdateMassSearchAsync"
+                placeholder="Filter mass..." />
+            </th>
+        </tr>
+    </thead>
+</table>
+
+<table class="table table-striped table-bordered table-hover" style="width: 100%; table-layout: fixed">
+    <thead>
+        <tr>
+            <th>Name</th>
+            <th>Height</th>
+            <th>Mass</th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var person in _personList)
+        {
+            <tr @onclick="() => ToggleDetails(person)">
+                <td>@person.Name</td>
+                <td>@person.Height</td>
+                <td>@person.Mass</td>
+            </tr>
+            @if (_selectedPerson == person)
+            {
+                <td colspan="3" class="border border-dark border-1 rounded-3">
+                    <div class="p-3 bg-light text-dark">
+                        @person.Name is a @person.Height cm tall @person.Gender, born in @person.BirthYear.  
+                        Characteristics include @person.HairColor hair, @person.EyeColor eyes, and a @person.SkinColor skin color.
+                    </div>
+                </td>
+            }
+        }
+    </tbody>
+</table>
+<Pagination TotalPages="10"/>
+
+<!-- BlazorBootstrap Pagination Component -->
+
+@code {
+
+    private Person _selectedPerson = null;
+    private void ToggleDetails(Person person)
+    {
+        _selectedPerson = (_selectedPerson == person) ? null : person;
+    }
+
+    private string _inputFilterName;
+    private string _inputFilterHeight;
+    private string _inputFilterMass;
+    private List<Person> _personList = new();
+
+    protected override async Task OnInitializedAsync()
+    {
+        _personList = await _swapiService.GetPeopleList();
+        await base.OnInitializedAsync();
+    }
+
+    //Søgnings Input
+    private async Task UpdateNameSearchAsync()
+    {
+        _personList = await _swapiService.FilterPeopleList(_inputFilterName, "name");
+    }
+    private async Task UpdateHeightSearchAsync()
+    {
+        _personList = await _swapiService.FilterPeopleList(_inputFilterHeight, "height");
+    }
+    private async Task UpdateMassSearchAsync()
+    {
+        _personList = await _swapiService.FilterPeopleList(_inputFilterMass, "mass");
+    }
+
+    //Paginering
+
+}
