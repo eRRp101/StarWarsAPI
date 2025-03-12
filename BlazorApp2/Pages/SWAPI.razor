@@ -12,10 +12,10 @@
         <tr>
             <th>
                 <input class="form-control mb-3"
-                       type="text" style="text-align:center"
+                       type="text"
                        @bind="_inputFilterName"
                        @bind:event="oninput"
-                       @bind:after="UpdateNameSearchAsync"
+                       @bind:after="ApplyFiltersAsync"
                        placeholder="Filter name..." />
             </th>
             <th>
@@ -23,7 +23,7 @@
                        type="text"
                        @bind="_inputFilterHeight"
                        @bind:event="oninput"
-                       @bind:after="UpdateHeightSearchAsync"
+                       @bind:after="ApplyFiltersAsync"
                        placeholder="Filter height..." />
             </th>
             <th>
@@ -31,7 +31,7 @@
                        type="text"
                        @bind="_inputFilterMass"
                        @bind:event="oninput"
-                       @bind:after="UpdateMassSearchAsync"
+                       @bind:after="ApplyFiltersAsync"
                        placeholder="Filter mass..." />
             </th>
         </tr>
@@ -41,18 +41,11 @@
 <hr class="border-primary" />
 
 @* --- Loading --- *@
-@if (isLoading)
+@if (isLoading || IsFiltering)
 {
     <div class="text-center">
-        <div class="spinner-border" role="status" />
-        <div>Fetching Data</div>
-    </div>
-}
-@if (IsFiltering)
-{
-    <div class="text-center">
-        <div class="spinner-border" role="status" />
-        <div>Filtering Data.. You can Keep typing!</div>
+        <div class="spinner-border" role="status"></div>
+        <div>@(isLoading ? "Fetching Data..." : "Filtering Data...")</div>
     </div>
 }
 
@@ -67,7 +60,7 @@
     <tbody>
         @foreach (var person in _paginatedPersonList)
         {
-            <tr @onclick="() => ToggleDetails(person)">
+            <tr @onclick="() => ToggleDetails(person)" class="@(person == _selectedPerson ? "table-active" : "")">
                 <td>@person.Name</td>
                 <td>@person.Height</td>
                 <td>@person.Mass</td>
@@ -101,7 +94,20 @@
     private List<People> _paginatedPersonList = new();
     private bool CanGoToPreviousPage => CurrentPage > 1;
     private bool CanGoToNextPage => CurrentPage < TotalPages;
-    private int TotalPages => (int)Math.Ceiling((double)_filteredPersonList.Count / PageSize);
+
+    private int _totalPages;
+    private int TotalPages
+    {
+        get => _totalPages;
+        set
+        {
+            if (_totalPages != value)
+            {
+                _totalPages = value;
+                StateHasChanged();
+            }
+        }
+    }
 
     private void LoadPage(int pageNumber)
     {
@@ -136,9 +142,41 @@
 
     bool isLoading = false;
     bool IsFiltering = false;
+
+    //Filters
     private string _inputFilterName;
+    private string InputFilterName
+    {
+        get => _inputFilterName;
+        set
+        {
+            _inputFilterName = value;
+            _ = ApplyFiltersAsync();
+        }
+    }
+
     private string _inputFilterHeight;
+    private string InputFilterHeight
+    {
+        get => _inputFilterHeight;
+        set
+        {
+            _inputFilterHeight = value;
+            _ = ApplyFiltersAsync();
+        }
+    }
+
     private string _inputFilterMass;
+    private string InputFilterMass
+    {
+        get => _inputFilterMass;
+        set
+        {
+            _inputFilterMass = value;
+            _ = ApplyFiltersAsync();
+        }
+    }
+
     private List<People> _personList = new();
     private List<People> _filteredPersonList = new();
 
@@ -146,35 +184,24 @@
     {
         isLoading = true;
         _personList = await _swapiService.GetPeopleList();
-        _filteredPersonList = new List<People>(_personList); 
+        _filteredPersonList = new List<People>(_personList);
         LoadPage(CurrentPage);
         isLoading = false;
         await base.OnInitializedAsync();
     }
 
     //Search Filters
-    private async Task UpdateNameSearchAsync()
+    private async Task ApplyFiltersAsync()
     {
         IsFiltering = true;
-        _filteredPersonList = await _swapiService.FilterPeopleList(_inputFilterName, "name");
-        CurrentPage = 1; 
-        LoadPage(CurrentPage); 
-        IsFiltering = false;
-    }
-    private async Task UpdateHeightSearchAsync()
-    {
-        IsFiltering = true;
-        _filteredPersonList = await _swapiService.FilterPeopleList(_inputFilterHeight, "height");
+
+        _filteredPersonList = await _swapiService.FilterPeopleList(
+            _inputFilterName, _inputFilterHeight, _inputFilterMass);
+
         CurrentPage = 1;
+        TotalPages = (int)Math.Ceiling((double)_filteredPersonList.Count / PageSize);
         LoadPage(CurrentPage);
-        IsFiltering = false;
-    }
-    private async Task UpdateMassSearchAsync()
-    {
-        IsFiltering = true;
-        _filteredPersonList = await _swapiService.FilterPeopleList(_inputFilterMass, "mass");
-        CurrentPage = 1;
-        LoadPage(CurrentPage);
+
         IsFiltering = false;
     }
 }
