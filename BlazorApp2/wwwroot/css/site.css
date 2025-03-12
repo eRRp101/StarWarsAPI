@@ -1,5 +1,9 @@
 @import url('open-iconic/font/css/open-iconic-bootstrap.min.css');
 
+.table-active {
+    background-color: rgba(0, 123, 255, 0.25);
+}
+
 html, body {
     font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;
 }

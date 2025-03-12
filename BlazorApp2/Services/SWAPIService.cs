@@ -52,31 +52,32 @@ namespace BlazorApp2.Services
             return persons;
         }
 
-        public async Task<List<People>> FilterPeopleList(string userInput, string filterField)
+        public async Task<List<People>> FilterPeopleList(string nameFilter, string heightFilter, string massFilter)
         {
             List<People> person = await GetPeopleList();
-            var trimmedUserInput = userInput?.Trim() ?? string.Empty;
 
-            switch (filterField)
+            var trimmedNameFilter = nameFilter?.Trim().ToLower() ?? string.Empty;
+            var trimmedHeightFilter = heightFilter?.Trim().ToLower() ?? string.Empty;
+            var trimmedMassFilter = massFilter?.Trim().ToLower() ?? string.Empty;
+
+            var filteredList = person.AsQueryable();
+
+            if (!string.IsNullOrEmpty(trimmedNameFilter))
             {
-                case "name":
-                    return person
-                        .Where(p => p.Name.IndexOf(trimmedUserInput, StringComparison.OrdinalIgnoreCase) >= 0)
-                        .ToList();
-
-                case "height":
-                    return person
-                        .Where(p => p.Height.IndexOf(trimmedUserInput, StringComparison.OrdinalIgnoreCase) >= 0)
-                        .ToList();
-
-                case "mass":
-                    return person
-                        .Where(p => p.Mass.IndexOf(trimmedUserInput, StringComparison.OrdinalIgnoreCase) >= 0)
-                        .ToList();
-                default:
-                    return new List<People>();
+                filteredList = filteredList.Where(p => p.Name.ToLower().Contains(trimmedNameFilter));
             }
+            if (!string.IsNullOrEmpty(trimmedHeightFilter))
+            {
+                filteredList = filteredList.Where(p => p.Height.ToLower().Contains(trimmedHeightFilter));
+            }
+            if (!string.IsNullOrEmpty(trimmedMassFilter))
+            {
+                filteredList = filteredList.Where(p => p.Mass.ToLower().Contains(trimmedMassFilter));
+            }
+            return filteredList.ToList();
         }
-        
+
     }
+
 }
+
