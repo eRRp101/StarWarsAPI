@@ -1,10 +1,5 @@
-﻿
-using BlazorApp2.Model;
-using System;
-using System.Buffers;
-using System.Collections.Generic;
+﻿using BlazorApp2.Model;
 using System.Text.Json;
-using System.Text.Json.Serialization;
 
 namespace BlazorApp2.Services
 {
@@ -15,41 +10,31 @@ namespace BlazorApp2.Services
 
         public async Task<List<People>> GetPeopleList()
         {
-            List<People> persons = new List<People>();
+            List<People> peopleList = new List<People>();
+            string nextPageUrl = _apiBaseUrl + "people";  
 
-            HttpResponseMessage response = await _httpClient.GetAsync(_apiBaseUrl + "people");
-            string responseBody = await response.Content.ReadAsStringAsync();
-
-            if (response.IsSuccessStatusCode)
+            try
             {
-                SWAPIpage pages = JsonSerializer.Deserialize<SWAPIpage>(responseBody);
-
-                do
+                while (!string.IsNullOrEmpty(nextPageUrl))
                 {
-                    PersonWrapper personWrapper = JsonSerializer.Deserialize<PersonWrapper>(responseBody);
-                    persons.AddRange(personWrapper.PersonList);
-
-                    if (!string.IsNullOrEmpty(pages.NextPage))
+                    HttpResponseMessage response = await _httpClient.GetAsync(nextPageUrl);
+                    if (response.IsSuccessStatusCode)
                     {
-                        response = await _httpClient.GetAsync(pages.NextPage);
-                        responseBody = await response.Content.ReadAsStringAsync(); 
+                        string responseBody = await response.Content.ReadAsStringAsync();
+                        SWAPIpage page = JsonSerializer.Deserialize<SWAPIpage>(responseBody);
+                        PersonWrapper personWrapper = JsonSerializer.Deserialize<PersonWrapper>(responseBody);
 
-                        if (response.IsSuccessStatusCode)
-                        {
-                            pages = JsonSerializer.Deserialize<SWAPIpage>(responseBody); 
-                        }
-                        else
-                        {
-                            break; 
-                        }
+                        peopleList.AddRange(personWrapper.PersonList);
+                        nextPageUrl = page.NextPage;
                     }
-                    else
-                    {
-                        break; 
-                    }
-                } while (pages.NextPage != null);
+                }
             }
-            return persons;
+            catch (Exception ex)
+            {
+                Console.WriteLine($"Error occurred: {ex.Message}");
+            }
+
+            return peopleList;
         }
 
         public async Task<List<People>> FilterPeopleList(string nameFilter, string heightFilter, string massFilter)
