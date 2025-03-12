@@ -94,20 +94,7 @@
     private List<People> _paginatedPersonList = new();
     private bool CanGoToPreviousPage => CurrentPage > 1;
     private bool CanGoToNextPage => CurrentPage < TotalPages;
-
-    private int _totalPages;
-    private int TotalPages
-    {
-        get => _totalPages;
-        set
-        {
-            if (_totalPages != value)
-            {
-                _totalPages = value;
-                StateHasChanged();
-            }
-        }
-    }
+    private int TotalPages => Math.Max(1, (int)Math.Ceiling((double)_filteredPersonList.Count / PageSize));
 
     private void LoadPage(int pageNumber)
     {
@@ -145,37 +132,9 @@
 
     //Filters
     private string _inputFilterName;
-    private string InputFilterName
-    {
-        get => _inputFilterName;
-        set
-        {
-            _inputFilterName = value;
-            _ = ApplyFiltersAsync();
-        }
-    }
-
     private string _inputFilterHeight;
-    private string InputFilterHeight
-    {
-        get => _inputFilterHeight;
-        set
-        {
-            _inputFilterHeight = value;
-            _ = ApplyFiltersAsync();
-        }
-    }
-
     private string _inputFilterMass;
-    private string InputFilterMass
-    {
-        get => _inputFilterMass;
-        set
-        {
-            _inputFilterMass = value;
-            _ = ApplyFiltersAsync();
-        }
-    }
+
 
     private List<People> _personList = new();
     private List<People> _filteredPersonList = new();
@@ -199,7 +158,6 @@
             _inputFilterName, _inputFilterHeight, _inputFilterMass);
 
         CurrentPage = 1;
-        TotalPages = (int)Math.Ceiling((double)_filteredPersonList.Count / PageSize);
         LoadPage(CurrentPage);
 
         IsFiltering = false;
