@@ -5,6 +5,10 @@
 
 <h1 class="text-center">Star Wars Characters</h1>
 
+<div class="text-start mb-2 ms-2">
+    <button class="btn btn-primary" @onclick="ClearFilters">Reset Filters</button>
+</div>
+
 <hr class="border-primary" />
 
 <table class="table table-striped">
@@ -12,27 +16,27 @@
         <tr>
             <th>
                 <input class="form-control mb-3"
-                       type="text"
-                       @bind="_inputFilterName"
-                       @bind:event="oninput"
-                       @bind:after="ApplyFiltersAsync"
-                       placeholder="Filter name..." />
+                type="text"
+                @bind="_inputFilterName"
+                @bind:event="oninput"
+                @bind:after="ApplyFiltersAsync"
+                placeholder="Filter name..." />
             </th>
             <th>
                 <input class="form-control mb-3"
-                       type="text"
-                       @bind="_inputFilterHeight"
-                       @bind:event="oninput"
-                       @bind:after="ApplyFiltersAsync"
-                       placeholder="Filter height..." />
+                type="text"
+                @bind="_inputFilterHeight"
+                @bind:event="oninput"
+                @bind:after="ApplyFiltersAsync"
+                placeholder="Filter height..." />
             </th>
             <th>
                 <input class="form-control mb-3"
-                       type="text"
-                       @bind="_inputFilterMass"
-                       @bind:event="oninput"
-                       @bind:after="ApplyFiltersAsync"
-                       placeholder="Filter mass..." />
+                type="text"
+                @bind="_inputFilterMass"
+                @bind:event="oninput"
+                @bind:after="ApplyFiltersAsync"
+                placeholder="Filter mass..." />
             </th>
         </tr>
     </thead>
@@ -51,7 +55,7 @@
 
 <table class="table table-striped table-bordered table-hover" style="width: 100%; table-layout: fixed">
     <thead>
-        <tr>
+        <tr style="background-color: #e3e3e3">
             <th>Name</th>
             <th>Height</th>
             <th>Mass</th>
@@ -60,26 +64,28 @@
     <tbody>
         @foreach (var person in _paginatedPersonList)
         {
-            <tr @onclick="() => ToggleDetails(person)" class="@(person == _selectedPerson ? "table-active" : "")">
+            <tr @onclick="() => ToggleDetails(person)"
+                class="@(person == _selectedPerson ? "table-active" : "")"
+                style="font-weight: @(person == _selectedPerson ? "bold" : "normal");
+                background-color: @(person == _selectedPerson ? "#b8d7fc" : "transparent")">
+
                 <td>@person.Name</td>
                 <td>@person.Height</td>
                 <td>@person.Mass</td>
             </tr>
-            @if (_selectedPerson == person)
-            {
-                <tr>
-                    <td colspan="3" class="border border-dark border-1 rounded-3">
-                        @*  Information om onclick række/person *@
-                        <div class="p-3 bg-light text-dark fade-in">
-                            @person.Name is a @person.Height cm tall @person.Gender, born in @person.BirthYear.
-                            Characteristics include @person.HairColor hair, @person.EyeColor eyes, and a @person.SkinColor skin color.
-                        </div>
-                    </td>
-                </tr>
-            }
+            <tr class="accordion-row @(person == _selectedPerson ? "show" : "")">
+                <td colspan="3" class="accordion-content"  style="font-size: 17px; font-weight: 500">
+
+                    <span class="oi oi-star" aria-hidden="true" style="margin-right: 10px; color: black)"></span>
+                    @person.Name is a @person.Height cm tall @person.Gender, born in @person.BirthYear.
+                    Characteristics include @person.HairColor hair, @person.EyeColor eyes, and a @person.SkinColor skin color.
+                </td>
+            </tr>
         }
     </tbody>
 </table>
+
+<hr/>
 
 <div class="text-center">
     <button class="btn btn-primary" @onclick="PreviousPage" disabled="@(!CanGoToPreviousPage)">Previous</button>
@@ -131,9 +137,9 @@
     bool IsFiltering = false;
 
     //Filters
-    private string ?_inputFilterName;
-    private string ?_inputFilterHeight;
-    private string ?_inputFilterMass;
+    private string? _inputFilterName;
+    private string? _inputFilterHeight;
+    private string? _inputFilterMass;
 
 
     private List<People> _personList = new();
@@ -149,7 +155,7 @@
         await base.OnInitializedAsync();
     }
 
-    //Search Filters - fik styr på en bedre søgningstilgang end den beskrevet i mail 
+    //Search Filters - fik styr på en bedre søgningstilgang end den beskrevet i mail
     private async Task ApplyFiltersAsync()
     {
         IsFiltering = true;
@@ -165,6 +171,11 @@
 
     private async Task ClearFilters()
     {
+        _inputFilterName = string.Empty;
+        _inputFilterHeight = string.Empty;
+        _inputFilterMass = string.Empty;
+        _filteredPersonList = new List<People>(_personList);
 
+        LoadPage(CurrentPage);
     }
 }
