@@ -82,9 +82,9 @@
 </table>
 
 <div class="text-center">
-    <button class="btn btn-primary" @onclick="PreviousPage" disabled="@(!CanGoToPreviousPage)">Previous</button>
+    <button class="btn btn-primary" @onclick="() => LoadPage(CurrentPage - 1)" disabled="@((CurrentPage <= 1))">Previous</button>
     <span class="mx-2">Page @CurrentPage of @TotalPages</span>
-    <button class="btn btn-primary" @onclick="NextPage" disabled="@(!CanGoToNextPage)">Next</button>
+    <button class="btn btn-primary" @onclick="() => LoadPage(CurrentPage + 1)" disabled="@((CurrentPage >= TotalPages))">Next</button>
 </div>
 
 @code {
@@ -92,32 +92,12 @@
     private int PageSize { get; set; } = 10;
     private int CurrentPage { get; set; } = 1;
     private List<People> _paginatedPersonList = new();
-    private bool CanGoToPreviousPage => CurrentPage > 1;
-    private bool CanGoToNextPage => CurrentPage < TotalPages;
     private int TotalPages => Math.Max(1, (int)Math.Ceiling((double)_filteredPersonList.Count / PageSize));
 
     private void LoadPage(int pageNumber)
     {
         var skip = (pageNumber - 1) * PageSize;
         _paginatedPersonList = _filteredPersonList.Skip(skip).Take(PageSize).ToList();
-    }
-
-    private void NextPage()
-    {
-        if (CanGoToNextPage)
-        {
-            CurrentPage++;
-            LoadPage(CurrentPage);
-        }
-    }
-
-    private void PreviousPage()
-    {
-        if (CanGoToPreviousPage)
-        {
-            CurrentPage--;
-            LoadPage(CurrentPage);
-        }
     }
 
     //Onclick row toggle
@@ -131,9 +111,9 @@
     bool IsFiltering = false;
 
     //Filters
-    private string _inputFilterName;
-    private string _inputFilterHeight;
-    private string _inputFilterMass;
+    private string ?_inputFilterName;
+    private string ?_inputFilterHeight;
+    private string ?_inputFilterMass;
 
 
     private List<People> _personList = new();
@@ -149,7 +129,7 @@
         await base.OnInitializedAsync();
     }
 
-    //Search Filters
+    //Search Filters - fik styr på en bedre søgningstilgang end den beskrevet i mail 
     private async Task ApplyFiltersAsync()
     {
         IsFiltering = true;
