@@ -194,7 +194,7 @@
     private async Task ApplyFiltersAsync()
     {
         IsFiltering = true;
-
+        await Task.Delay(500); //Debouncing som vi snakkede om
         _filteredPersonList = await _swapiService.FilterPeopleList(
             _inputFilterName, _inputFilterHeight, _inputFilterMass);
 
