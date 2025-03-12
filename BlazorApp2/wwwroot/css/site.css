@@ -4,6 +4,42 @@
     background-color: rgba(0, 123, 255, 0.25);
 }
 
+
+.accordion-row {
+    display: none;
+    background-color: #f9f9f9;
+    transition: height 0.3s ease-in-out;
+}
+
+    .accordion-row.show {
+        display: table-row;
+    }
+
+.accordion-content {
+    padding: 10px;
+    font-size: 14px;
+    background-color: #f8f9fa;
+    border: 1px solid #ddd;
+    border-radius: 5px;
+}
+
+.accordion-row.show .accordion-content {
+    animation: slideIn 0.3s ease-in-out;
+}
+
+@keyframes slideIn {
+    from {
+        opacity: 0;
+        transform: translateY(-10px);
+    }
+
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+
 html, body {
     font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;
 }
