@@ -1,9 +1,14 @@
-﻿using System.Text.Json.Serialization;
+﻿using System;
+using System.Text.Json.Serialization;
+using static System.Net.WebRequestMethods;
 
 namespace BlazorApp2.Model
 {
-    public class People 
+    public class People
     {
+        private string _baseImgUrl = $"https://www.starwars.com/databank/";
+        public string ImgUrl { get { return _baseImgUrl + Name; } }
+        
         [JsonPropertyName("name")]
         public string Name { get; set; }
 
@@ -27,14 +32,10 @@ namespace BlazorApp2.Model
 
         [JsonPropertyName("gender")]
         public string Gender { get; set; }
-
-        [JsonPropertyName("homeworld")]
-        public string HomeWorld { get; set; }
     }
 
     public class PersonWrapper : IWrapper
     {
-
         [JsonPropertyName("results")]
         public List<People> PersonList { get; set; }
     }

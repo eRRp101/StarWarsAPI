@@ -3,6 +3,10 @@
 /*Vars*/
 :root {
     --swOrange: #f1b021;
+    --swBgStandard: red;
+    --swBgLight: red;
+    --swBgActive: red;
+    --userSelectNone: none;
 }
 
 
@@ -92,6 +96,7 @@
         background-color: #1a1a1a;
         border-bottom: 1px solid #333;
         font-family: Calibri;
+        user-select: none;
     }
 
     .star-wars-table th {
@@ -108,18 +113,37 @@
 
     /* Table rows */
     .star-wars-table tbody tr {
+        user-select: none;
         transition: background-color 0.2s ease-in-out;
     }
 
         .star-wars-table tbody tr:hover {
-            background-color: #292929;
-        }
+            background-color: #1D1D1D;
+        }   
 
+    /* table data*/
     .star-wars-table td {
         padding: 10px;
         border-bottom: 1px solid #333;
         border-right: 1px solid #333;
+        transition: background 0.1s ease-in-out, transform 0.2s ease-in-out, font-weight 0.2s ease-in-out;
     }
+
+        .star-wars-table td:first-child:hover {
+            font-weight: 500;
+            background-color: #292929;
+            transform: translateX(2px);
+        }
+        .star-wars-table td:nth-child(2):hover {
+            font-weight: 500;
+            background-color: #292929;
+            transform: translateX(2px);
+        }
+        .star-wars-table td:nth-child(3):hover {
+            font-weight: 500;
+            background-color: #292929;
+            transform: translateX(2px);
+        }
 
         .star-wars-table td:last-child {
             border-right: none !important;
@@ -291,7 +315,7 @@ hr {
         box-shadow: 0 0 5px var(--swOrange) !important;
     }
 
-/* nav styling*/
+/* nav styling (sidebar buttons)*/
 .nav-link {
     border: 1px solid var(--swOrange) !important;
     background-color: #121212 !important;
@@ -354,28 +378,6 @@ hr {
     .nav-scrollable:hover {
         box-shadow: 0 40px 120px rgba(0, 0, 0, 1);
     }
-
-/*.accordion-row {
-    background-color: transparent!important;
-    transition: height 0.3s ease-in-out!important;
-}
-
-    .accordion-row.show {
-        display: table-row;
-    }
-
-.accordion-content {
-    padding: 10px;
-    font-size: 14px;
-    background-color: blue!important;
-    border: 1px solid #ddd;
-    border-radius: 5px;
-    color: red;
-}
-
-.accordion-row.show .accordion-content {
-    animation: slideIn 0.3s ease-in-out;
-}*/
 
 @keyframes slideIn {
     from {

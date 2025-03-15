@@ -7,31 +7,41 @@ namespace BlazorApp2.Services
     {
         private static readonly HttpClient _httpClient = new HttpClient();
         private readonly string _apiBaseUrl = "https://swapi.dev/api/";
-
         public async Task<List<People>> GetPeopleList()
         {
-            List<People> peopleList = new List<People>();
-            string nextPageUrl = _apiBaseUrl + "people";  
+            var peopleList = new List<People>();
+            string nextPageUrl = _apiBaseUrl + "people";
 
             try
             {
                 while (!string.IsNullOrEmpty(nextPageUrl))
                 {
-                    HttpResponseMessage response = await _httpClient.GetAsync(nextPageUrl);
-                    if (response.IsSuccessStatusCode)
-                    {
-                        string responseBody = await response.Content.ReadAsStringAsync();
-                        SWAPIpage page = JsonSerializer.Deserialize<SWAPIpage>(responseBody);
-                        PersonWrapper personWrapper = JsonSerializer.Deserialize<PersonWrapper>(responseBody);
+                    var response = await _httpClient.GetAsync(nextPageUrl);
+                    response.EnsureSuccessStatusCode(); // Exception if no response
 
+                    var responseBody = await response.Content.ReadAsStringAsync();
+                    var page = JsonSerializer.Deserialize<SWAPIpage>(responseBody);
+                    var personWrapper = JsonSerializer.Deserialize<PersonWrapper>(responseBody);
+
+                    if (personWrapper?.PersonList != null)
+                    {
                         peopleList.AddRange(personWrapper.PersonList);
-                        nextPageUrl = page.NextPage;
                     }
+
+                    nextPageUrl = page?.NextPage;
                 }
+            }
+            catch (HttpRequestException ex)
+            {
+                Console.WriteLine($"HTTP request error: {ex.Message}");
+            }
+            catch (JsonException ex)
+            {
+                Console.WriteLine($"JSON deserialization error: {ex.Message}");
             }
             catch (Exception ex)
             {
-                Console.WriteLine($"Error occurred: {ex.Message}");
+                Console.WriteLine($"Unexpected error: {ex.Message}");
             }
 
             return peopleList;
@@ -61,8 +71,6 @@ namespace BlazorApp2.Services
             }
             return filteredList.ToList();
         }
-
     }
-
 }
 

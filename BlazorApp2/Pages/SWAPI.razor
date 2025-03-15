@@ -5,7 +5,7 @@
 
 <div class="component-background">
 
-    @* --- Header as Loading Indicator --- *@
+    @* --- Header Glowing+SubText as Loading Indicators --- *@
     <div class="loader-container">
         <div class="title-loader">
             <h1 class="@((isLoading || IsFiltering) ? "loading-title" : "h1-sw")">Star Wars Characters</h1>
@@ -73,21 +73,19 @@
         </tbody>
     </table>
 
-
     <!-- Modal Overlay -->
     <div class="modal-sw-overlay @(isModalVisible ? "show" : "")" @onclick="CloseModal">
         <div class="modal-sw-content" @onclick:stopPropagation>
-            <h2>@(_selectedPerson?.Name ?? "No Name")</h2>
-            @if (_selectedPerson != null)
+            <h2>@(_selectedModalPerson?.Name ?? "No Name")</h2>
+            @if (_selectedModalPerson != null)
             {
                 <div>
-                    @_selectedPerson.Name is a @_selectedPerson.Height cm tall @_selectedPerson.Gender, born in @_selectedPerson.BirthYear.
-                    Characteristics include @_selectedPerson.HairColor hair, @_selectedPerson.EyeColor eyes, and a @_selectedPerson.SkinColor skin color.
+                    @_selectedModalPerson.Name is a @_selectedModalPerson.Height cm tall @_selectedModalPerson.Gender, born in @_selectedModalPerson.BirthYear.
+                    Characteristics include @_selectedModalPerson.HairColor hair, @_selectedModalPerson.EyeColor eyes, and a @_selectedModalPerson.SkinColor skin color.
                 </div>
             }
         </div>
     </div>
-    }
 
     <div class="text-center m-3">
         <button class="btn-sw" @onclick="PreviousPage" disabled="@(!CanGoToPreviousPage)">Previous</button>
@@ -133,14 +131,14 @@
     }
 
     //Modal
-    private People _selectedPerson = null;
+    private People _selectedModalPerson = null;
+    private bool isModalVisible = false;
+
     private void ToggleDetails(People person)
     {
-        _selectedPerson = (_selectedPerson == person) ? null : person;
+        _selectedModalPerson = (_selectedModalPerson == person) ? null : person;
         OpenModal();
     }
-
-    private bool isModalVisible = false;
 
     private void OpenModal()
     {
@@ -150,7 +148,7 @@
     private void CloseModal()
     {
         isModalVisible = false;
-        _selectedPerson = null;
+        _selectedModalPerson = null;
     }
 
     bool isLoading = false;
@@ -161,35 +159,42 @@
     private string? _inputFilterHeight;
     private string? _inputFilterMass;
 
-    //
-    private List<People> _personList = new();
-    private List<People> _filteredPersonList = new();
+    private Timer? _debounceTimer;
+    private const int DebounceDelay = 500;
 
-    protected override async Task OnInitializedAsync()
-    {
-        isLoading = true;
-        _personList = await _swapiService.GetPeopleList();
-        _filteredPersonList = new List<People>(_personList);
-        LoadPage(CurrentPage);
-        isLoading = false;
-        await base.OnInitializedAsync();
-    }
-
-    //Search Filters
+    //Nu med actual debouncing (i think)
     private async Task ApplyFiltersAsync()
     {
-        IsFiltering = true;
-        await Task.Delay(500); //Debouncing som vi snakkede om
-        _filteredPersonList = await _swapiService.FilterPeopleList(_personList,
-            _inputFilterName, _inputFilterHeight, _inputFilterMass);
+        //if running
+        _debounceTimer?.Dispose();
 
-        CurrentPage = 1;
-        LoadPage(CurrentPage);
+        _debounceTimer = new Timer(async _ =>
+        {
+            await InvokeAsync(async () =>
+            {
+                try
+                {
+                    IsFiltering = true; 
+                    StateHasChanged(); 
 
-        IsFiltering = false;
+                    _filteredPersonList = await _swapiService.FilterPeopleList(_personList,
+                        _inputFilterName, _inputFilterHeight, _inputFilterMass);
+
+                    CurrentPage = 1;
+                    LoadPage(CurrentPage);
+                }
+                finally
+                {
+                    IsFiltering = false; 
+                    StateHasChanged(); 
+
+                    _debounceTimer.Dispose();
+                }
+            });
+        }, null, DebounceDelay, Timeout.Infinite); 
     }
 
-    private async Task ClearFilters()
+    private void ClearFilters()
     {
         _inputFilterName = string.Empty;
         _inputFilterHeight = string.Empty;
@@ -197,5 +202,20 @@
         _filteredPersonList = new List<People>(_personList);
 
         LoadPage(CurrentPage);
+    }
+
+    //
+    private List<People> _personList = new();
+    private List<People> _filteredPersonList = new();
+
+    protected override async Task OnInitializedAsync()
+    {
+        isLoading = true;
+        // Task.Delay(2000); //bare for at vise loading idé, en spinner kan man altid lave 
+        _personList = await _swapiService.GetPeopleList();
+        _filteredPersonList = new List<People>(_personList);
+        LoadPage(CurrentPage);
+        isLoading = false;
+        await base.OnInitializedAsync();
     }
 }
