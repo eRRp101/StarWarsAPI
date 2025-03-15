@@ -37,9 +37,9 @@ namespace BlazorApp2.Services
             return peopleList;
         }
 
-        public async Task<List<People>> FilterPeopleList(string nameFilter, string heightFilter, string massFilter)
+        public async Task<List<People>> FilterPeopleList(List<People> peopleList, string nameFilter, string heightFilter, string massFilter)
         {
-            List<People> person = await GetPeopleList();
+            List<People> person = peopleList;
 
             var trimmedNameFilter = nameFilter?.Trim().ToLower() ?? string.Empty;
             var trimmedHeightFilter = heightFilter?.Trim().ToLower() ?? string.Empty;

@@ -4,6 +4,156 @@
     background-color: rgba(0, 123, 255, 0.25);
 }
 
+/* misc*/
+.component-background {
+    background-color: rgba(0, 0, 0, 0.85);
+    padding: 20px;
+    border-radius: 10px;
+    opacity: 0;
+    animation: fadeIn 0.25s ease-in-out forwards;
+}
+
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+    }
+
+    to {
+        opacity: 1;
+    }
+}
+
+.background-starfield {
+    background-image: url('Images/Backgrounds/starfield_background.png');
+    background-size: 100% 100%;
+    background-position: center;
+    background-attachment: fixed;
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    z-index: -1;
+}
+
+/* fonts*/
+@font-face {
+    font-family: 'Star Jedi';
+    src: url('/fonts/Starjhol.ttf') format('truetype');
+    font-weight: normal;
+    font-style: normal;
+}
+
+h1 {
+    font-family: 'Star Jedi', sans-serif;
+    text-align: center;
+    color: #f1b021;
+    text-transform: uppercase;
+    -webkit-user-select: none; /* Safari */
+    -moz-user-select: none; /* Firefox */
+    -ms-user-select: none; /* Internet Explorer/Edge */
+    user-select: none;
+    transition: text-shadow 0.3s ease-in-out; /* Smooth transition */
+}
+
+    h1:hover {
+        text-shadow: 0 0 5px #f1b021;
+    }
+
+/* Button styling*/
+.btn-sw {
+    background-color: #121212 !important;
+    border-color: #f1b021 !important;
+}
+
+    .btn-sw:hover {
+        background-color: #292929 !important;
+    }
+
+    .btn-sw:focus {
+        background-color: #383838 !important;
+        box-shadow: 0 0 3px #f1b021 !important;
+    }
+
+/* input styling*/
+.form-control {
+    background-color: transparent;
+    color: white !important;
+}
+
+    .form-control:hover {
+        box-shadow: 0 0 5px #f1b021 !important;
+    }
+
+    .form-control:focus {
+        background-color: transparent;
+        border-color: #f1b021 !important; /* Keep border color consistent */
+        box-shadow: 0 0 5px #f1b021 !important;
+    }
+
+/* nav styling*/
+.nav-link {
+    border: 1px solid #f1b021 !important;
+    background-color: #121212 !important;
+    transition: transform 0.2s ease-in-out;
+}
+
+    .nav-link:hover {
+        background-color: #292929 !important;
+        border-color: #f1b021;
+    }
+
+    .nav-link:active {
+        background-color: #383838 !important;
+        border-color: #f1b021;
+    }
+
+    .nav-link.active {
+        background-color: #383838 !important;
+        border-color: #f1b021;
+    }
+
+    .nav-link div {
+        display: inline-block;
+        transition: transform 0.2s ease-in-out; /* Add transition to the content */
+    }
+
+    .nav-link:hover div {
+        transform: translateX(4px); /* Move content 5px to the right */
+    }
+
+.navbar-blackgradient {
+    background: red;
+    color: white;
+}
+
+.navbar {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100px;
+    width: 100%;
+    background-color: black;
+}
+
+.navbar-logo {
+    width: 85px;
+    object-fit: contain;
+}
+
+.top-row {
+    background: black !important; /* Kunne ikke sætte den anderledes :/ */
+}
+
+.nav-scrollable {
+    background: black;
+    box-shadow: 0 20px 80px rgba(0, 0, 0, 1);
+    transition: box-shadow 0.2s ease-in-out;
+}
+
+    .nav-scrollable:hover {
+        box-shadow: 0 40px 120px rgba(0, 0, 0, 1);
+    }
 
 .accordion-row {
     display: none;
@@ -59,7 +209,7 @@ a, .btn-link {
 }
 
 .btn:focus, .btn:active:focus, .btn-link.nav-link:focus, .form-control:focus, .form-check-input:focus {
-  box-shadow: 0 0 0 0.1rem white, 0 0 0 0.25rem #258cfb;
+    box-shadow: 0 0 0 0.1rem white, 0 0 0 0.25rem #258cfb;
 }
 
 .content {

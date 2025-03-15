@@ -3,95 +3,98 @@
 
 <PageTitle>Star Wars Characters</PageTitle>
 
-<h1 class="text-center">Star Wars Characters</h1>
+<div class="component-background">
 
-<div class="text-start mb-2 ms-2">
-    <button class="btn btn-primary" @onclick="ClearFilters">Reset Filters</button>
-</div>
+    <h1 class="text-center">Star Wars Characters</h1>
 
-<hr class="border-primary" />
-
-<table class="table table-striped">
-    <thead>
-        <tr>
-            <th>
-                <input class="form-control mb-3"
-                type="text"
-                @bind="_inputFilterName"
-                @bind:event="oninput"
-                @bind:after="ApplyFiltersAsync"
-                placeholder="Filter name..." />
-            </th>
-            <th>
-                <input class="form-control mb-3"
-                type="text"
-                @bind="_inputFilterHeight"
-                @bind:event="oninput"
-                @bind:after="ApplyFiltersAsync"
-                placeholder="Filter height..." />
-            </th>
-            <th>
-                <input class="form-control mb-3"
-                type="text"
-                @bind="_inputFilterMass"
-                @bind:event="oninput"
-                @bind:after="ApplyFiltersAsync"
-                placeholder="Filter mass..." />
-            </th>
-        </tr>
-    </thead>
-</table>
-
-
-
-@* --- Loading --- *@
-@if (isLoading || IsFiltering)
-{
-    <div class="text-center">
-        <div class="spinner-border" role="status"></div>
-        <div>@(isLoading ? "Fetching Data..." : "Filtering Data...")</div>
+    <div class="text-start mb-2 ms-2">
+        <button class="btn-sw" @onclick="ClearFilters">Reset Filters</button>
     </div>
-}
 
-<table class="table table-striped table-bordered table-hover" style="width: 100%; table-layout: fixed">
-    <thead>
-        <tr style="background-color: #e3e3e3">
-            <th>Name</th>
-            <th>Height</th>
-            <th>Mass</th>
-        </tr>
-    </thead>
-    <tbody>
-        @foreach (var person in _paginatedPersonList)
-        {
-            <tr @onclick="() => ToggleDetails(person)"
-                class="@(person == _selectedPerson ? "table-active" : "")"
-                style="font-weight: @(person == _selectedPerson ? "bold" : "normal");
+    <hr class="border-primary" />
+
+    <table class="table table-striped">
+        <thead>
+            <tr>
+                <th>
+                    <input class="form-control mb-3"
+                           type="text"
+                           @bind="_inputFilterName"
+                           @bind:event="oninput"
+                           @bind:after="ApplyFiltersAsync"
+                           placeholder="Filter name..." />
+                </th>
+                <th>
+                    <input class="form-control mb-3"
+                           type="text"
+                           @bind="_inputFilterHeight"
+                           @bind:event="oninput"
+                           @bind:after="ApplyFiltersAsync"
+                           placeholder="Filter height..." />
+                </th>
+                <th>
+                    <input class="form-control mb-3"
+                           type="text"
+                           @bind="_inputFilterMass"
+                           @bind:event="oninput"
+                           @bind:after="ApplyFiltersAsync"
+                           placeholder="Filter mass..." />
+                </th>
+            </tr>
+        </thead>
+    </table>
+
+    @* --- Loading --- *@
+    @if (isLoading || IsFiltering)
+    {
+        <div class="text-center">
+            <div class="spinner-border" role="status"></div>
+            <div>@(isLoading ? "Fetching Data..." : "Filtering Data...")</div>
+        </div>
+    }
+
+    <table class="table table-striped table-bordered table-hover" style="width: 100%; table-layout: fixed">
+        <thead>
+            <tr style="background-color: #e3e3e3">
+                <th>Name</th>
+                <th>Height</th>
+                <th>Mass</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var person in _paginatedPersonList)
+            {
+                <tr @onclick="() => ToggleDetails(person)"
+                    class="@(person == _selectedPerson ? "table-active" : "")"
+                    style="font-weight: @(person == _selectedPerson ? "bold" : "normal");
                 background-color: @(person == _selectedPerson ? "#b8d7fc" : "transparent")">
 
-                <td>@person.Name</td>
-                <td>@person.Height</td>
-                <td>@person.Mass</td>
-            </tr>
-            <tr class="accordion-row @(person == _selectedPerson ? "show" : "")">
-                <td colspan="3" class="accordion-content"  style="font-size: 17px; font-weight: 500">
+                    <td>@person.Name</td>
+                    <td>@person.Height</td>
+                    <td>@person.Mass</td>
+                </tr>
+                <tr class="accordion-row @(person == _selectedPerson ? "show" : "")">
+                    <td colspan="3" class="accordion-content" style="font-size: 17px; font-weight: 500">
 
-                    <span class="oi oi-star" aria-hidden="true" style="margin-right: 10px; color: black)"></span>
-                    @person.Name is a @person.Height cm tall @person.Gender, born in @person.BirthYear.
-                    Characteristics include @person.HairColor hair, @person.EyeColor eyes, and a @person.SkinColor skin color.
-                </td>
-            </tr>
-        }
-    </tbody>
-</table>
+                        <span class="oi oi-star" aria-hidden="true" style="margin-right: 10px; color: black)"></span>
+                        @person.Name is a @person.Height cm tall @person.Gender, born in @person.BirthYear.
+                        Characteristics include @person.HairColor hair, @person.EyeColor eyes, and a @person.SkinColor skin color.
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>
 
-<hr/>
+    <hr />
 
-<div class="text-center">
-    <button class="btn btn-primary" @onclick="PreviousPage" disabled="@(!CanGoToPreviousPage)">Previous</button>
-    <span class="mx-2">Page @CurrentPage of @TotalPages</span>
-    <button class="btn btn-primary" @onclick="NextPage" disabled="@(!CanGoToNextPage)">Next</button>
+    <div class="text-center">
+        <button class="btn btn-primary" @onclick="PreviousPage" disabled="@(!CanGoToPreviousPage)">Previous</button>
+        <span class="mx-2">Page @CurrentPage of @TotalPages</span>
+        <button class="btn btn-primary" @onclick="NextPage" disabled="@(!CanGoToNextPage)">Next</button>
+    </div>
 </div>
+
+
 
 @code {
     //Pagination
@@ -141,7 +144,7 @@
     private string? _inputFilterHeight;
     private string? _inputFilterMass;
 
-
+    //
     private List<People> _personList = new();
     private List<People> _filteredPersonList = new();
 
@@ -155,12 +158,12 @@
         await base.OnInitializedAsync();
     }
 
-    //Search Filters - fik styr på en bedre søgningstilgang end den beskrevet i mail
+    //Search Filters 
     private async Task ApplyFiltersAsync()
     {
         IsFiltering = true;
         await Task.Delay(500); //Debouncing som vi snakkede om
-        _filteredPersonList = await _swapiService.FilterPeopleList(
+        _filteredPersonList = await _swapiService.FilterPeopleList(_personList,
             _inputFilterName, _inputFilterHeight, _inputFilterMass);
 
         CurrentPage = 1;
