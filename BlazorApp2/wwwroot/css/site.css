@@ -4,7 +4,7 @@
     background-color: rgba(0, 123, 255, 0.25);
 }
 
-/* Title Loader Container */
+/* Loading Animation */
 .loader-container {
     height: 120px; /* Adjust this value to match the height of your loader */
     display: flex;
@@ -14,19 +14,27 @@
     text-align: center;
 }
 
-/* Glowing Title */
-.glowing-title {
-    font-family: 'Star Jedi', sans-serif; 
-    font-size: 2rem;
-    color: #f1b021; 
+.loading-title {
+    font-family: 'Star Jedi', sans-serif;
+    text-align: center;
+    text-transform: uppercase;
+    color: #f1b021;
+    -webkit-user-select: none; /* Safari */
+    -moz-user-select: none; /* Firefox */
+    -ms-user-select: none; /* Internet Explorer/Edge */
+    user-select: none;
     animation: glow-pulse 1s infinite ease-in-out;
 }
 
-/* Loading Text */
 .loading-text {
-    font-family: 'Star Jedi', sans-serif; 
-    font-size: 1rem;
-    color: #f1b021; 
+    font-size: 1.15em;
+    line-height: 1;
+    min-height: 1rem;
+    color: #f1b021;
+    -webkit-user-select: none; /* Safari */
+    -moz-user-select: none; /* Firefox */
+    -ms-user-select: none; /* Internet Explorer/Edge */
+    user-select: none;
     opacity: 0;
     animation: fade-pulse 1s infinite ease-in-out;
 }
@@ -34,15 +42,15 @@
 /* Animations */
 @keyframes glow-pulse {
     0% {
-        text-shadow: 0 0 10px rgba(241, 176, 33, 0.5);
+        text-shadow: 0 0 5px rgba(241, 176, 33, 0.5);
     }
 
     50% {
-        text-shadow: 0 0 20px rgba(241, 176, 33, 1);
+        text-shadow: 0 0 15px rgba(241, 176, 33, 1);
     }
 
     100% {
-        text-shadow: 0 0 10px rgba(241, 176, 33, 0.5);
+        text-shadow: 0 0 5px rgba(241, 176, 33, 0.5);
     }
 }
 
@@ -65,45 +73,45 @@
     width: 100%;
     table-layout: fixed;
     border-collapse: collapse;
-    background-color: #121212 !important; /* Dark background */
-    color: #fff !important; /* White text */
-    border: 1px solid #f1b021 !important; /* Gold border for the table */
-    box-shadow: 0 0 10px rgba(241, 176, 33, 0.3) !important; /* Subtle glow */
-    animation: table-enter 1s ease-in-out !important; /* Table entrance animation */
+    background-color: #121212 !important; 
+    color: white;
+    border: 1px solid #f1b021 !important; 
+    box-shadow: 0 0 10px rgba(241, 176, 33, 0.3) !important; 
+    animation: fadeIn 1s ease-in-out !important; 
 }
 
     /* Table header */
     .star-wars-table thead {
-        background-color: #1a1a1a !important; /* Slightly lighter dark background */
-        border-bottom: 1px solid #333 !important; /* Dark divider for header */
-
+        background-color: #1a1a1a !important; 
+        border-bottom: 1px solid #333 !important; 
+        font-family: Calibri;
     }
 
     .star-wars-table th {
         padding: 12px;
         text-align: left;
         font-size: 1.1rem;
-        color: #f1b021 !important; /* Gold text for headers */
-        border-right: 1px solid #333 !important; /* Dark vertical separator */
+        color: #f1b021 !important; 
+        border-right: 1px solid #333 !important; 
     }
 
         .star-wars-table th:last-child {
-            border-right: none !important; /* Remove border from last header cell */
+            border-right: none !important;
         }
 
     /* Table rows */
     .star-wars-table tbody tr {
-        transition: background-color 0.3s ease-in-out !important; /* Smooth hover effect */
+        transition: background-color 0.2s ease-in-out !important;
     }
 
         .star-wars-table tbody tr:hover {
-            background-color: #292929 !important; /* Highlight row on hover */
+            background-color: #292929 !important; 
         }
 
     .star-wars-table td {
         padding: 10px;
-        border-bottom: 1px solid #333 !important; /* Dark row separator */
-        border-right: 1px solid #333 !important; /* Dark vertical separator */
+        border-bottom: 1px solid #333 !important; 
+        border-right: 1px solid #333 !important;
     }
 
         .star-wars-table td:last-child {
@@ -155,6 +163,12 @@
 }
 
 /* misc*/
+hr {
+    height: 3px!important;
+    color: #f1b021;
+    box-shadow: 0 0 5px #f1b021!important; /* Glow effect */
+}
+
 .component-background {
     background-color: rgba(0, 0, 0, 0.85);
     padding: 20px;
@@ -194,7 +208,7 @@
     font-style: normal;
 }
 
-h1 {
+.h1-sw {
     font-family: 'Star Jedi', sans-serif;
     text-align: center;
     color: #f1b021;
@@ -206,7 +220,7 @@ h1 {
     transition: text-shadow 0.3s ease-in-out; 
 }
 
-    h1:hover {
+    .h1-sw:hover {
         text-shadow: 0 0 5px #f1b021;
     }
 

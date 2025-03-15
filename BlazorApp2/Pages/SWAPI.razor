@@ -6,38 +6,28 @@
 <div class="component-background">
 
     @* --- Header as Loading Indicator --- *@
-    @if (isLoading || IsFiltering)
-    {
-        <div class="loader-container">
-            @if (isLoading || IsFiltering)
-            {
-                <div class="title-loader">
-                    <h1 class="glowing-title">Star Wars Characters</h1>
-                    <div class="loading-text">@(isLoading ? "Fetching Data..." : "Filtering Data...")</div>
-                </div>
-            }
-            else
-            {
-                <h1>Star Wars Characters</h1>
-            }
+    <div class="loader-container">
+        <div class="title-loader">
+            <h1 class="@((isLoading || IsFiltering) ? "loading-title" : "h1-sw")">Star Wars Characters</h1>
+            <div class="loading-text">
+                @if (isLoading || IsFiltering)
+                {
+                    @(isLoading ? "Fetching Data..." : "Filtering Data...")
+                }
+                <!-- Empty -->
+                &nbsp;
+            </div>
         </div>
-    }
-    else
-    {
-        <h1>Star Wars Characters</h1>
-    }
-
-    <div class="text-start mb-2 ms-2">
-        <button class="btn-sw" @onclick="ClearFilters">Reset Filters</button>
     </div>
-
-    <hr class="border-primary" />
-
+    <hr/>
+    <div class="mb-3">
+        <button class="btn-sw" @onclick="ClearFilters">Reset all filters</button>
+    </div>
     <table class="star-wars-table" style="width: 100%; table-layout: fixed">
         <thead>
             <tr>
                 <th>
-                    <div style="display: flex; align-items: baseline; gap: 100px;">
+                    <div style="display: flex; align-items: baseline; gap: 200px;">
                         Name
                         <input class="form-control"
                                type="text"
@@ -48,7 +38,7 @@
                     </div>
                 </th>
                 <th>
-                    <div style="display: flex; align-items: baseline; gap: 100px;">
+                    <div style="display: flex; align-items: baseline; gap: 200px;">
                         Height
                         <input class="form-control"
                                type="text"
@@ -59,7 +49,7 @@
                     </div>
                 </th>
                 <th>
-                    <div style="display: flex; align-items: baseline; gap: 100px;">
+                    <div style="display: flex; align-items: baseline; gap: 200px;">
                         Mass
                         <input class="form-control"
                                type="text"
@@ -92,13 +82,12 @@
         </tbody>
     </table>
 
-    <hr />
-
-    <div class="text-center">
+    <div class="text-center m-3">
         <button class="btn-sw" @onclick="PreviousPage" disabled="@(!CanGoToPreviousPage)">Previous</button>
         <span class="mx-2">Page @CurrentPage of @TotalPages</span>
         <button class="btn-sw" @onclick="NextPage" disabled="@(!CanGoToNextPage)">Next</button>
     </div>
+    <hr />
 </div>
 
 
