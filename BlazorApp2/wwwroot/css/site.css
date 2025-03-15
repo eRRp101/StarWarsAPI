@@ -6,7 +6,7 @@
 
 /* Loading Animation */
 .loader-container {
-    height: 120px; /* Adjust this value to match the height of your loader */
+    height: 120px; 
     display: flex;
     flex-direction: column;
     justify-content: center;
@@ -166,7 +166,7 @@
 hr {
     height: 3px!important;
     color: #f1b021;
-    box-shadow: 0 0 5px #f1b021!important; /* Glow effect */
+    box-shadow: 0 0 5px #f1b021!important; 
 }
 
 .component-background {
@@ -245,7 +245,7 @@ hr {
 
     .btn-sw:active {
         background-color: #363636;
-        animation: focus-shadow 0.15s ease-in-out; /* Add animation to active state */
+        animation: focus-shadow 0.15s ease-in-out; 
     }
 
     .btn-sw:disabled {
@@ -268,7 +268,7 @@ hr {
 
     .form-control:focus {
         background-color: transparent;
-        border-color: #f1b021 !important; /* Keep border color consistent */
+        border-color: #f1b021 !important; 
         box-shadow: 0 0 5px #f1b021 !important;
     }
 
@@ -296,11 +296,11 @@ hr {
 
     .nav-link div {
         display: inline-block;
-        transition: transform 0.2s ease-in-out; /* Add transition to the content */
+        transition: transform 0.2s ease-in-out; 
     }
 
     .nav-link:hover div {
-        transform: translateX(4px); /* Move content 5px to the right */
+        transform: translateX(4px); 
     }
 
 .navbar-blackgradient {
@@ -323,7 +323,7 @@ hr {
 }
 
 .top-row {
-    background: black !important; /* Kunne ikke sætte den anderledes :/ */
+    background: black !important; 
 }
 
 .nav-scrollable {
