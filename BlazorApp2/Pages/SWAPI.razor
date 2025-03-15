@@ -19,8 +19,8 @@
             </div>
         </div>
     </div>
-    <hr/>
-    <div class="mb-3">
+    <hr />
+    <div class="mb-3 ">
         <button class="btn-sw" @onclick="ClearFilters">Reset all filters</button>
     </div>
     <table class="star-wars-table" style="width: 100%; table-layout: fixed">
@@ -30,33 +30,33 @@
                     <div style="display: flex; align-items: baseline; gap: 200px;">
                         Name
                         <input class="form-control"
-                               type="text"
-                               @bind="_inputFilterName"
-                               @bind:event="oninput"
-                               @bind:after="ApplyFiltersAsync"
-                               placeholder="Filter by name..." />
+                        type="text"
+                        @bind="_inputFilterName"
+                        @bind:event="oninput"
+                        @bind:after="ApplyFiltersAsync"
+                        placeholder="Filter by name..." />
                     </div>
                 </th>
                 <th>
                     <div style="display: flex; align-items: baseline; gap: 200px;">
                         Height
                         <input class="form-control"
-                               type="text"
-                               @bind="_inputFilterHeight"
-                               @bind:event="oninput"
-                               @bind:after="ApplyFiltersAsync"
-                               placeholder="Filter by height..." />
+                        type="text"
+                        @bind="_inputFilterHeight"
+                        @bind:event="oninput"
+                        @bind:after="ApplyFiltersAsync"
+                        placeholder="Filter by height..." />
                     </div>
                 </th>
                 <th>
                     <div style="display: flex; align-items: baseline; gap: 200px;">
                         Mass
                         <input class="form-control"
-                               type="text"
-                               @bind="_inputFilterMass"
-                               @bind:event="oninput"
-                               @bind:after="ApplyFiltersAsync"
-                               placeholder="Filter by mass..." />
+                        type="text"
+                        @bind="_inputFilterMass"
+                        @bind:event="oninput"
+                        @bind:after="ApplyFiltersAsync"
+                        placeholder="Filter by mass..." />
                     </div>
                 </th>
             </tr>
@@ -65,22 +65,29 @@
             @foreach (var person in _paginatedPersonList)
             {
                 <tr @onclick="() => ToggleDetails(person)">
-
                     <td>@person.Name</td>
                     <td>@person.Height</td>
                     <td>@person.Mass</td>
                 </tr>
-                <tr class="accordion-row @(person == _selectedPerson ? "show" : "")">
-                    <td colspan="3" class="accordion-content" style="font-size: 17px; font-weight: 500">
-
-                        <span class="oi oi-star" aria-hidden="true" style="margin-right: 10px; color: black)"></span>
-                        @person.Name is a @person.Height cm tall @person.Gender, born in @person.BirthYear.
-                        Characteristics include @person.HairColor hair, @person.EyeColor eyes, and a @person.SkinColor skin color.
-                    </td>
-                </tr>
             }
         </tbody>
     </table>
+
+
+    <!-- Modal Overlay -->
+    <div class="modal-sw-overlay @(isModalVisible ? "show" : "")" @onclick="CloseModal">
+        <div class="modal-sw-content" @onclick:stopPropagation>
+            <h2>@(_selectedPerson?.Name ?? "No Name")</h2>
+            @if (_selectedPerson != null)
+            {
+                <div>
+                    @_selectedPerson.Name is a @_selectedPerson.Height cm tall @_selectedPerson.Gender, born in @_selectedPerson.BirthYear.
+                    Characteristics include @_selectedPerson.HairColor hair, @_selectedPerson.EyeColor eyes, and a @_selectedPerson.SkinColor skin color.
+                </div>
+            }
+        </div>
+    </div>
+    }
 
     <div class="text-center m-3">
         <button class="btn-sw" @onclick="PreviousPage" disabled="@(!CanGoToPreviousPage)">Previous</button>
@@ -125,11 +132,25 @@
         }
     }
 
-    //Onclick row toggle
+    //Modal
     private People _selectedPerson = null;
     private void ToggleDetails(People person)
     {
         _selectedPerson = (_selectedPerson == person) ? null : person;
+        OpenModal();
+    }
+
+    private bool isModalVisible = false;
+
+    private void OpenModal()
+    {
+        isModalVisible = true;
+    }
+
+    private void CloseModal()
+    {
+        isModalVisible = false;
+        _selectedPerson = null;
     }
 
     bool isLoading = false;
@@ -154,7 +175,7 @@
         await base.OnInitializedAsync();
     }
 
-    //Search Filters 
+    //Search Filters
     private async Task ApplyFiltersAsync()
     {
         IsFiltering = true;

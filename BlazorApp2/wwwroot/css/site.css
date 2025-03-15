@@ -1,5 +1,11 @@
 @import url('open-iconic/font/css/open-iconic-bootstrap.min.css');
 
+/*Vars*/
+:root {
+    --swOrange: #f1b021;
+}
+
+
 .table-active {
     background-color: rgba(0, 123, 255, 0.25);
 }
@@ -16,9 +22,10 @@
 
 .loading-title {
     font-family: 'Star Jedi', sans-serif;
+    font-size: 60px;
     text-align: center;
     text-transform: uppercase;
-    color: #f1b021;
+    color: var(--swOrange);
     -webkit-user-select: none; /* Safari */
     -moz-user-select: none; /* Firefox */
     -ms-user-select: none; /* Internet Explorer/Edge */
@@ -30,7 +37,7 @@
     font-size: 1.15em;
     line-height: 1;
     min-height: 1rem;
-    color: #f1b021;
+    color: var(--swOrange);
     -webkit-user-select: none; /* Safari */
     -moz-user-select: none; /* Firefox */
     -ms-user-select: none; /* Internet Explorer/Edge */
@@ -75,7 +82,7 @@
     border-collapse: collapse;
     background-color: #121212;
     color: white;
-    border: 1px solid #f1b021;
+    border: 1px solid var(--swOrange);
     box-shadow: 0 0 10px rgba(241, 176, 33, 0.3);
     animation: fadeIn 1s ease-in-out;
 }
@@ -91,7 +98,7 @@
         padding: 12px;
         text-align: left;
         font-size: 1.1rem;
-        color: #f1b021;
+        color: var(--swOrange);
         border-right: 1px solid #333;
     }
 
@@ -131,29 +138,53 @@
         .star-wars-table tfoot td {
             padding: 12px;
             font-weight: bold;
-            color: #f1b021;
+            color: var(--swOrange);
         }
 
-/* Accordion row styling */
-.accordion-row {
-    display: none;
+/* Modal */
+.modal-sw-overlay {
+    display: none; 
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.8); 
+    justify-content: center;
+    align-items: center;
+    z-index: 1000; 
+    animation: fadeIn 0.3s ease-in-out; 
 }
 
-    .accordion-row.show {
-        display: table-row;
+.modal-sw-content {
+    background-color: #121212; 
+    padding: 20px;
+    border-radius: 10px;
+    border: 1px solid #f1b021; 
+    box-shadow: 0 0 10px rgba(241, 176, 33, 0.5); 
+    max-width: 500px;
+    width: 90%;
+    animation: fadeIn 0.3s ease-in-out; 
+    color: white; 
+}
+
+    .modal-sw-content h2 {
+        color: var(--swOrange); 
     }
 
-.accordion-content {
-    padding: 10px;
-    background-color: #1a1a1a;
-    color: #fff;
+.modal-sw-overlay.show {
+    display: flex; 
 }
 
 /* misc*/
 hr {
     height: 3px!important;
-    color: #f1b021!important;
-    box-shadow: 0 0 5px #f1b021!important; 
+    color: var(--swOrange)!important;
+    box-shadow: 0 0 5px var(--swOrange)!important; 
+}
+
+.jedi-font {
+    font-family: 'Star Jedi', sans-serif; 
 }
 
 .component-background {
@@ -197,8 +228,9 @@ hr {
 
 .h1-sw {
     font-family: 'Star Jedi', sans-serif;
+    font-size: 60px;
     text-align: center;
-    color: #f1b021;
+    color: var(--swOrange);
     text-transform: uppercase;
     -webkit-user-select: none; /* Safari */
     -moz-user-select: none; /* Firefox */
@@ -208,7 +240,7 @@ hr {
 }
 
     .h1-sw:hover {
-        text-shadow: 0 0 5px #f1b021;
+        text-shadow: 0 0 10px var(--swOrange);
     }
 
 /* Button styling*/
@@ -219,7 +251,7 @@ hr {
     vertical-align: middle;
     user-select: none;
     background-color: #121212;
-    border: 1px solid #f1b021;
+    border: 1px solid var(--swOrange);
     padding: 0.375rem 0.75rem;
     font-size: 1rem;
     line-height: 1.5;
@@ -250,35 +282,35 @@ hr {
 }
 
     .form-control:hover {
-        box-shadow: 0 0 5px #f1b021 !important;
+        box-shadow: 0 0 5px var(--swOrange) !important;
     }
 
     .form-control:focus {
         background-color: transparent;
-        border-color: #f1b021 !important; 
-        box-shadow: 0 0 5px #f1b021 !important;
+        border-color: var(--swOrange) !important; 
+        box-shadow: 0 0 5px var(--swOrange) !important;
     }
 
 /* nav styling*/
 .nav-link {
-    border: 1px solid #f1b021 !important;
+    border: 1px solid var(--swOrange) !important;
     background-color: #121212 !important;
     transition: transform 0.2s ease-in-out;
 }
 
     .nav-link:hover {
         background-color: #292929 !important;
-        border-color: #f1b021;
+        border-color: var(--swOrange);
     }
 
     .nav-link:active {
         background-color: #383838 !important;
-        border-color: #f1b021;
+        border-color: var(--swOrange);
     }
 
     .nav-link.active {
         background-color: #383838 !important;
-        border-color: #f1b021;
+        border-color: var(--swOrange);
     }
 
     .nav-link div {
@@ -323,10 +355,9 @@ hr {
         box-shadow: 0 40px 120px rgba(0, 0, 0, 1);
     }
 
-.accordion-row {
-    display: none;
-    background-color: #f9f9f9;
-    transition: height 0.3s ease-in-out;
+/*.accordion-row {
+    background-color: transparent!important;
+    transition: height 0.3s ease-in-out!important;
 }
 
     .accordion-row.show {
@@ -336,14 +367,15 @@ hr {
 .accordion-content {
     padding: 10px;
     font-size: 14px;
-    background-color: #f8f9fa;
+    background-color: blue!important;
     border: 1px solid #ddd;
     border-radius: 5px;
+    color: red;
 }
 
 .accordion-row.show .accordion-content {
     animation: slideIn 0.3s ease-in-out;
-}
+}*/
 
 @keyframes slideIn {
     from {
