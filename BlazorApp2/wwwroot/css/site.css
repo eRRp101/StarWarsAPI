@@ -4,6 +4,156 @@
     background-color: rgba(0, 123, 255, 0.25);
 }
 
+/* Title Loader Container */
+.loader-container {
+    height: 120px; /* Adjust this value to match the height of your loader */
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    text-align: center;
+}
+
+/* Glowing Title */
+.glowing-title {
+    font-family: 'Star Jedi', sans-serif; 
+    font-size: 2rem;
+    color: #f1b021; 
+    animation: glow-pulse 1s infinite ease-in-out;
+}
+
+/* Loading Text */
+.loading-text {
+    font-family: 'Star Jedi', sans-serif; 
+    font-size: 1rem;
+    color: #f1b021; 
+    opacity: 0;
+    animation: fade-pulse 1s infinite ease-in-out;
+}
+
+/* Animations */
+@keyframes glow-pulse {
+    0% {
+        text-shadow: 0 0 10px rgba(241, 176, 33, 0.5);
+    }
+
+    50% {
+        text-shadow: 0 0 20px rgba(241, 176, 33, 1);
+    }
+
+    100% {
+        text-shadow: 0 0 10px rgba(241, 176, 33, 0.5);
+    }
+}
+
+@keyframes fade-pulse {
+    0% {
+        opacity: 0.5;
+    }
+
+    50% {
+        opacity: 1;
+    }
+
+    100% {
+        opacity: 0.5;
+    }
+}
+
+/*Table*/
+.star-wars-table {
+    width: 100%;
+    table-layout: fixed;
+    border-collapse: collapse;
+    background-color: #121212 !important; /* Dark background */
+    color: #fff !important; /* White text */
+    border: 1px solid #f1b021 !important; /* Gold border for the table */
+    box-shadow: 0 0 10px rgba(241, 176, 33, 0.3) !important; /* Subtle glow */
+    animation: table-enter 1s ease-in-out !important; /* Table entrance animation */
+}
+
+    /* Table header */
+    .star-wars-table thead {
+        background-color: #1a1a1a !important; /* Slightly lighter dark background */
+        border-bottom: 1px solid #333 !important; /* Dark divider for header */
+
+    }
+
+    .star-wars-table th {
+        padding: 12px;
+        text-align: left;
+        font-size: 1.1rem;
+        color: #f1b021 !important; /* Gold text for headers */
+        border-right: 1px solid #333 !important; /* Dark vertical separator */
+    }
+
+        .star-wars-table th:last-child {
+            border-right: none !important; /* Remove border from last header cell */
+        }
+
+    /* Table rows */
+    .star-wars-table tbody tr {
+        transition: background-color 0.3s ease-in-out !important; /* Smooth hover effect */
+    }
+
+        .star-wars-table tbody tr:hover {
+            background-color: #292929 !important; /* Highlight row on hover */
+        }
+
+    .star-wars-table td {
+        padding: 10px;
+        border-bottom: 1px solid #333 !important; /* Dark row separator */
+        border-right: 1px solid #333 !important; /* Dark vertical separator */
+    }
+
+        .star-wars-table td:last-child {
+            border-right: none !important; /* Remove border from last cell */
+        }
+
+    .star-wars-table tbody tr:last-child td {
+        border-bottom: none !important; /* Remove border from last row */
+    }
+
+    /* Table footer */
+    .star-wars-table tfoot {
+        background-color: #1a1a1a !important; /* Same as header */
+        border-top: 2px solid #333 !important; /* Dark divider for footer */
+    }
+
+        .star-wars-table tfoot td {
+            padding: 12px;
+            font-weight: bold;
+            color: #f1b021 !important; /* Gold text for footer */
+        }
+
+/* Table entrance animation */
+@keyframes table-enter {
+    0% {
+        opacity: 0;
+        transform: translateY(20px);
+    }
+
+    100% {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+/* Accordion row styling */
+.accordion-row {
+    display: none;
+}
+
+    .accordion-row.show {
+        display: table-row;
+    }
+
+.accordion-content {
+    padding: 10px;
+    background-color: #1a1a1a !important;
+    color: #fff !important;
+}
+
 /* misc*/
 .component-background {
     background-color: rgba(0, 0, 0, 0.85);
@@ -53,7 +203,7 @@ h1 {
     -moz-user-select: none; /* Firefox */
     -ms-user-select: none; /* Internet Explorer/Edge */
     user-select: none;
-    transition: text-shadow 0.3s ease-in-out; /* Smooth transition */
+    transition: text-shadow 0.3s ease-in-out; 
 }
 
     h1:hover {
@@ -62,23 +212,40 @@ h1 {
 
 /* Button styling*/
 .btn-sw {
-    background-color: #121212 !important;
-    border-color: #f1b021 !important;
+    font-weight: 400;
+    color: #fff;
+    text-align: center;
+    vertical-align: middle;
+    user-select: none;
+    background-color: #121212;
+    border: 1px solid #f1b021;
+    padding: 0.375rem 0.75rem;
+    font-size: 1rem;
+    line-height: 1.5;
+    border-radius: 0.25rem;
+    transition: background-color 0.15s ease-in-out;
 }
-
     .btn-sw:hover {
-        background-color: #292929 !important;
+        background-color: #292929;
     }
 
-    .btn-sw:focus {
-        background-color: #383838 !important;
-        box-shadow: 0 0 3px #f1b021 !important;
+    .btn-sw:active {
+        background-color: #363636;
+        animation: focus-shadow 0.15s ease-in-out; /* Add animation to active state */
+    }
+
+    .btn-sw:disabled {
+        background-color: transparent;
+        border-color: chocolate;
+        opacity: 0.65;
     }
 
 /* input styling*/
 .form-control {
     background-color: transparent;
     color: white !important;
+    padding: 0.375rem 0.75rem;
+    height: calc(1.5em + 0.75rem + 2px)
 }
 
     .form-control:hover {
