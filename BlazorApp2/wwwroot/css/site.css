@@ -73,17 +73,17 @@
     width: 100%;
     table-layout: fixed;
     border-collapse: collapse;
-    background-color: #121212 !important; 
+    background-color: #121212;
     color: white;
-    border: 1px solid #f1b021 !important; 
-    box-shadow: 0 0 10px rgba(241, 176, 33, 0.3) !important; 
-    animation: fadeIn 1s ease-in-out !important; 
+    border: 1px solid #f1b021;
+    box-shadow: 0 0 10px rgba(241, 176, 33, 0.3);
+    animation: fadeIn 1s ease-in-out;
 }
 
     /* Table header */
     .star-wars-table thead {
-        background-color: #1a1a1a !important; 
-        border-bottom: 1px solid #333 !important; 
+        background-color: #1a1a1a;
+        border-bottom: 1px solid #333;
         font-family: Calibri;
     }
 
@@ -91,61 +91,48 @@
         padding: 12px;
         text-align: left;
         font-size: 1.1rem;
-        color: #f1b021 !important; 
-        border-right: 1px solid #333 !important; 
+        color: #f1b021;
+        border-right: 1px solid #333;
     }
 
         .star-wars-table th:last-child {
-            border-right: none !important;
+            border-right: none;
         }
 
     /* Table rows */
     .star-wars-table tbody tr {
-        transition: background-color 0.2s ease-in-out !important;
+        transition: background-color 0.2s ease-in-out;
     }
 
         .star-wars-table tbody tr:hover {
-            background-color: #292929 !important; 
+            background-color: #292929;
         }
 
     .star-wars-table td {
         padding: 10px;
-        border-bottom: 1px solid #333 !important; 
-        border-right: 1px solid #333 !important;
+        border-bottom: 1px solid #333;
+        border-right: 1px solid #333;
     }
 
         .star-wars-table td:last-child {
-            border-right: none !important; /* Remove border from last cell */
+            border-right: none !important;
         }
 
     .star-wars-table tbody tr:last-child td {
-        border-bottom: none !important; /* Remove border from last row */
+        border-bottom: none !important;
     }
 
     /* Table footer */
     .star-wars-table tfoot {
-        background-color: #1a1a1a !important; /* Same as header */
-        border-top: 2px solid #333 !important; /* Dark divider for footer */
+        background-color: #1a1a1a;
+        border-top: 2px solid #333;
     }
 
         .star-wars-table tfoot td {
             padding: 12px;
             font-weight: bold;
-            color: #f1b021 !important; /* Gold text for footer */
+            color: #f1b021;
         }
-
-/* Table entrance animation */
-@keyframes table-enter {
-    0% {
-        opacity: 0;
-        transform: translateY(20px);
-    }
-
-    100% {
-        opacity: 1;
-        transform: translateY(0);
-    }
-}
 
 /* Accordion row styling */
 .accordion-row {
@@ -158,14 +145,14 @@
 
 .accordion-content {
     padding: 10px;
-    background-color: #1a1a1a !important;
-    color: #fff !important;
+    background-color: #1a1a1a;
+    color: #fff;
 }
 
 /* misc*/
 hr {
     height: 3px!important;
-    color: #f1b021;
+    color: #f1b021!important;
     box-shadow: 0 0 5px #f1b021!important; 
 }
 
