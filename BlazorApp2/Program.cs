@@ -1,5 +1,3 @@
-using Microsoft.AspNetCore.Components;
-using Microsoft.AspNetCore.Components.Web;
 using BlazorApp2.Services;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -8,6 +6,8 @@ var builder = WebApplication.CreateBuilder(args);
 builder.Services.AddRazorPages();
 builder.Services.AddServerSideBlazor();
 builder.Services.AddSingleton<ISWAPIService, SWAPIService>();
+builder.Services.AddSingleton<IDebounceService, DebounceService>();
+builder.Services.AddSingleton<ApiExceptionService>();
 
 var app = builder.Build();
 

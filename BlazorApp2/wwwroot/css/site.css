@@ -1,31 +1,430 @@
 @import url('open-iconic/font/css/open-iconic-bootstrap.min.css');
 
+/*Vars*/
+:root {
+    --swOrange: #f1b021;
+    --swBgStandard: red;
+    --swBgLight: red;
+    --swBgActive: red;
+    --userSelectNone: none;
+}
+
 .table-active {
     background-color: rgba(0, 123, 255, 0.25);
 }
 
-
-.accordion-row {
-    display: none;
-    background-color: #f9f9f9;
-    transition: height 0.3s ease-in-out;
+/* Loading Animation */
+.loader-container {
+    height: 120px;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    text-align: center;
 }
 
-    .accordion-row.show {
-        display: table-row;
+.loading-title {
+    font-family: 'Star Jedi', sans-serif;
+    font-size: 60px;
+    text-align: center;
+    text-transform: uppercase;
+    color: var(--swOrange);
+    -webkit-user-select: none; /* Safari */
+    -moz-user-select: none; /* Firefox */
+    -ms-user-select: none; /* Internet Explorer/Edge */
+    user-select: none;
+    animation: glow-pulse 1s infinite ease-in-out;
+}
+
+.loading-text {
+    font-size: 1.15em;
+    line-height: 1;
+    min-height: 1rem;
+    color: var(--swOrange);
+    -webkit-user-select: none; /* Safari */
+    -moz-user-select: none; /* Firefox */
+    -ms-user-select: none; /* Internet Explorer/Edge */
+    user-select: none;
+    opacity: 0;
+    animation: fade-pulse 1s infinite ease-in-out;
+}
+
+/* Animations */
+@keyframes glow-pulse {
+    0% {
+        text-shadow: 0 0 5px rgba(241, 176, 33, 0.5);
     }
 
-.accordion-content {
-    padding: 10px;
-    font-size: 14px;
-    background-color: #f8f9fa;
-    border: 1px solid #ddd;
-    border-radius: 5px;
+    50% {
+        text-shadow: 0 0 15px rgba(241, 176, 33, 1);
+    }
+
+    100% {
+        text-shadow: 0 0 5px rgba(241, 176, 33, 0.5);
+    }
 }
 
-.accordion-row.show .accordion-content {
-    animation: slideIn 0.3s ease-in-out;
+@keyframes fade-pulse {
+    0% {
+        opacity: 0.5;
+    }
+
+    50% {
+        opacity: 1;
+    }
+
+    100% {
+        opacity: 0.5;
+    }
 }
+
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+    }
+
+    to {
+        opacity: 1;
+    }
+}
+
+@keyframes fadeOut {
+    from {
+        opacity: 1;
+    }
+
+    to {
+        opacity: 0;
+    }
+}
+
+/*Table*/
+/* input styling*/
+
+.header-container-sw {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    width: 100%;
+}
+
+.star-wars-table {
+    width: 100%;
+    table-layout: fixed;
+    border-collapse: collapse;
+    background-color: #121212;
+    color: white;
+    border: 1px solid var(--swOrange);
+    box-shadow: 0 0 10px rgba(241, 176, 33, 0.3);
+    animation: fadeIn 1s ease-in-out;
+}
+
+/* Header container */
+.header-container-sw {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    width: 100%;
+}
+
+.search-field-sw {
+    display: flex;
+    align-items: center;
+    gap: 20px;
+}
+
+
+.form-control {
+    margin-left: auto;
+    width: 100%;
+}
+
+/* Table header */
+.star-wars-table thead {
+    background-color: #1a1a1a;
+    border-bottom: 1px solid #333;
+    font-family: Calibri;
+    user-select: none;
+}
+
+.star-wars-table th {
+    padding: 12px;
+    text-align: left;
+    font-size: 1.1rem;
+    color: var(--swOrange);
+    border-right: 1px solid #333;
+    position: relative;
+}
+
+    .star-wars-table th:last-child {
+        border-right: none;
+    }
+
+/* Table rows */
+.star-wars-table tbody tr {
+    user-select: none;
+    transition: background-color 0.2s ease-in-out;
+}
+
+    .star-wars-table tbody tr:hover {
+        background-color: #1D1D1D;
+    }
+
+/* Table data */
+.star-wars-table td {
+    padding: 10px;
+    border-bottom: 1px solid #333;
+    border-right: 1px solid #333;
+    transition: background 0.1s ease-in-out, transform 0.2s ease-in-out, font-weight 0.2s ease-in-out;
+}
+
+    .star-wars-table td:first-child:hover {
+        font-weight: 500;
+        background-color: #292929;
+        transform: translateX(2px);
+    }
+
+    .star-wars-table td:nth-child(2):hover {
+        font-weight: 500;
+        background-color: #292929;
+        transform: translateX(2px);
+    }
+
+    .star-wars-table td:nth-child(3):hover {
+        font-weight: 500;
+        background-color: #292929;
+        transform: translateX(2px);
+    }
+
+    .star-wars-table td:last-child {
+        border-right: none !important;
+    }
+
+.star-wars-table tbody tr:last-child td {
+    border-bottom: none !important;
+}
+
+/* Table footer */
+.star-wars-table tfoot {
+    background-color: #1a1a1a;
+    border-top: 2px solid #333;
+}
+
+    .star-wars-table tfoot td {
+        padding: 12px;
+        font-weight: bold;
+        color: var(--swOrange);
+    }
+
+/* Modal */
+.modal-sw-overlay {
+    display: none;
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.8);
+    justify-content: center;
+    align-items: center;
+    z-index: 1000;
+    animation: fadeIn 0.2s ease-in-out;
+}
+
+.modal-sw-content {
+    background-color: #121212;
+    padding: 20px;
+    border-radius: 10px;
+    border: 1px solid #f1b021;
+    box-shadow: 0 0 10px rgba(241, 176, 33, 0.5);
+    max-width: 500px;
+    width: 90%;
+    color: white;
+}
+
+    .modal-sw-content h2 {
+        color: var(--swOrange);
+        text-align: center
+    }
+
+    .modal-sw-content img {
+        width: 100%;
+        height: auto;
+        border-radius: 0px;
+        mask-image: radial-gradient( circle, rgba(0, 0, 0, 1) 10%, rgba(0, 0, 0, 0) 100%);
+    }
+
+.modal-sw-overlay.show {
+    display: flex;
+}
+/* misc*/
+hr {
+    height: 3px !important;
+    color: var(--swOrange) !important;
+    box-shadow: 0 0 5px var(--swOrange) !important;
+}
+
+.jedi-font {
+    font-family: 'Star Jedi', sans-serif;
+}
+
+.component-background {
+    background-color: rgba(0, 0, 0, 0.85);
+    padding: 20px;
+    border-radius: 10px;
+    opacity: 0;
+    animation: fadeIn 0.25s ease-in-out forwards;
+}
+
+.background-starfield {
+    background-image: url('../Images/Backgrounds/starfield_background.png');
+    background-size: 100% 100%;
+    background-position: center;
+    background-attachment: fixed;
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    z-index: -1;
+}
+
+/* fonts*/
+@font-face {
+    font-family: 'Star Jedi';
+    src: url('/fonts/Starjhol.ttf') format('truetype');
+    font-weight: normal;
+    font-style: normal;
+}
+
+.h1-sw {
+    font-family: 'Star Jedi', sans-serif;
+    font-size: 60px;
+    text-align: center;
+    color: var(--swOrange);
+    text-transform: uppercase;
+    -webkit-user-select: none; /* Safari */
+    -moz-user-select: none; /* Firefox */
+    -ms-user-select: none; /* Internet Explorer/Edge */
+    user-select: none;
+    transition: text-shadow 0.3s ease-in-out;
+}
+
+    .h1-sw:hover {
+        text-shadow: 0 0 10px var(--swOrange);
+    }
+
+/* Button styling*/
+.btn-sw {
+    font-weight: 400;
+    color: #fff;
+    text-align: center;
+    vertical-align: middle;
+    user-select: none;
+    background-color: #121212;
+    border: 1px solid var(--swOrange);
+    padding: 0.375rem 0.75rem;
+    font-size: 1rem;
+    line-height: 1.5;
+    border-radius: 0.25rem;
+    transition: background-color 0.15s ease-in-out;
+}
+
+    .btn-sw:hover {
+        background-color: #292929;
+    }
+
+    .btn-sw:active {
+        background-color: #363636;
+        animation: focus-shadow 0.15s ease-in-out;
+    }
+
+    .btn-sw:disabled {
+        background-color: transparent;
+        border-color: chocolate;
+        opacity: 0.65;
+    }
+
+.form-control {
+    background-color: transparent;
+    color: white !important;
+    padding: 0.375rem 0.75rem;
+    height: calc(1.5em + 0.75rem + 2px)
+}
+
+    .form-control:hover {
+        box-shadow: 0 0 5px var(--swOrange) !important;
+    }
+
+    .form-control:focus {
+        background-color: transparent;
+        border-color: var(--swOrange) !important;
+        box-shadow: 0 0 5px var(--swOrange) !important;
+    }
+
+/* nav styling (sidebar buttons)*/
+.nav-link {
+    border: 1px solid var(--swOrange) !important;
+    background-color: #121212 !important;
+    transition: transform 0.2s ease-in-out;
+}
+
+    .nav-link:hover {
+        background-color: #292929 !important;
+        border-color: var(--swOrange);
+    }
+
+    .nav-link:active {
+        background-color: #383838 !important;
+        border-color: var(--swOrange);
+    }
+
+    .nav-link.active {
+        background-color: #383838 !important;
+        border-color: var(--swOrange);
+    }
+
+    .nav-link div {
+        display: inline-block;
+        transition: transform 0.2s ease-in-out;
+    }
+
+    .nav-link:hover div {
+        transform: translateX(4px);
+    }
+
+.navbar-blackgradient {
+    background: red;
+    color: white;
+}
+
+.navbar {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100px;
+    width: 100%;
+    background-color: black;
+}
+
+.navbar-logo {
+    width: 85px;
+    object-fit: contain;
+}
+
+.top-row {
+    background: black !important;
+}
+
+.nav-scrollable {
+    background: black;
+    box-shadow: 0 20px 80px rgba(0, 0, 0, 1);
+    transition: box-shadow 0.2s ease-in-out;
+}
+
+    .nav-scrollable:hover {
+        box-shadow: 0 40px 120px rgba(0, 0, 0, 1);
+    }
 
 @keyframes slideIn {
     from {
@@ -59,7 +458,7 @@ a, .btn-link {
 }
 
 .btn:focus, .btn:active:focus, .btn-link.nav-link:focus, .form-control:focus, .form-check-input:focus {
-  box-shadow: 0 0 0 0.1rem white, 0 0 0 0.25rem #258cfb;
+    box-shadow: 0 0 0 0.1rem white, 0 0 0 0.25rem #258cfb;
 }
 
 .content {

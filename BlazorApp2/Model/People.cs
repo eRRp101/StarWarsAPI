@@ -1,9 +1,13 @@
-﻿using System.Text.Json.Serialization;
+﻿using System;
+using System.Text.Json.Serialization;
+using static System.Net.WebRequestMethods;
 
 namespace BlazorApp2.Model
 {
-    public class People 
+    public class People
     {
+        public string ImgSrc { get; set; }
+
         [JsonPropertyName("name")]
         public string Name { get; set; }
 
@@ -29,13 +33,21 @@ namespace BlazorApp2.Model
         public string Gender { get; set; }
 
         [JsonPropertyName("homeworld")]
-        public string HomeWorld { get; set; }
+        public string HomeworldUrl { get; set; }
+
+        [JsonPropertyName("species")]
+        public List<string> SpeciesUrls { get; set; } = new List<string>();
+
+        public Planet Planet { get; set; }
+        public List<Species> Species { get; set; } = new List<Species>();
     }
 
-    public class PersonWrapper : IWrapper
+    public class PeopleWrapper
     {
-
         [JsonPropertyName("results")]
-        public List<People> PersonList { get; set; }
+        public List<People> Results { get; set; }
+
+        [JsonPropertyName("next")]
+        public string NextPage { get; set; }
     }
 }

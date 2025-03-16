@@ -7,43 +7,105 @@ namespace BlazorApp2.Services
     {
         private static readonly HttpClient _httpClient = new HttpClient();
         private readonly string _apiBaseUrl = "https://swapi.dev/api/";
+        private readonly ApiExceptionService _apiExceptionService;
+
+        public SWAPIService(ApiExceptionService apiExceptionService)
+        {
+            _apiExceptionService = apiExceptionService;
+        }
 
         public async Task<List<People>> GetPeopleList()
         {
-            List<People> peopleList = new List<People>();
-            string nextPageUrl = _apiBaseUrl + "people";  
+            var peopleList = new List<People>();
+            string nextPageUrl = _apiBaseUrl + "people";
 
             try
             {
-                while (!string.IsNullOrEmpty(nextPageUrl))
+                do
                 {
-                    HttpResponseMessage response = await _httpClient.GetAsync(nextPageUrl);
-                    if (response.IsSuccessStatusCode)
-                    {
-                        string responseBody = await response.Content.ReadAsStringAsync();
-                        SWAPIpage page = JsonSerializer.Deserialize<SWAPIpage>(responseBody);
-                        PersonWrapper personWrapper = JsonSerializer.Deserialize<PersonWrapper>(responseBody);
+                    var response = await _httpClient.GetAsync(nextPageUrl);
+                    response.EnsureSuccessStatusCode(); // Throws HttpRequestException on failure
 
-                        peopleList.AddRange(personWrapper.PersonList);
-                        nextPageUrl = page.NextPage;
+                    var responseBody = await response.Content.ReadAsStringAsync();
+                    var peopleWrapper = JsonSerializer.Deserialize<PeopleWrapper>(responseBody);
+
+                    if (peopleWrapper?.Results != null)
+                    {
+                        foreach (var person in peopleWrapper.Results)
+                        {
+                            if (!string.IsNullOrEmpty(person.HomeworldUrl))
+                            {
+                                person.Planet = await FetchPlanetAsync(person.HomeworldUrl);
+                            }
+
+                            if (person.SpeciesUrls != null && person.SpeciesUrls.Any())
+                            {
+                                person.Species = await FetchSpeciesAsync(person.SpeciesUrls);
+                            }
+
+                            peopleList.Add(person);
+                        }
                     }
+
+                    // Get the next page URL
+                    nextPageUrl = peopleWrapper?.NextPage;
                 }
+                while (!string.IsNullOrEmpty(nextPageUrl));
+
+                await MapImagesToList(peopleList);
+
+                ////test exception handling 
+                //throw new JsonException();
+            }
+            catch (HttpRequestException ex)
+            {
+                _apiExceptionService.LogException(ex, "HTTP request failed");
+                throw new ApiServiceException("Failed to connect to the API. Please check the endpoint or your internet connection.", ex);
+            }
+            catch (JsonException ex)
+            {
+                _apiExceptionService.LogException(ex, "JSON deserialization failed");
+                throw new ApiServiceException("Failed to process the API response. The data may be invalid.", ex);
             }
             catch (Exception ex)
             {
-                Console.WriteLine($"Error occurred: {ex.Message}");
+                _apiExceptionService.LogException(ex, "Unexpected error");
+                throw new ApiServiceException("An unexpected error occurred. Please try again later.", ex);
             }
 
             return peopleList;
         }
 
-        public async Task<List<People>> FilterPeopleList(string nameFilter, string heightFilter, string massFilter)
+        private async Task<Planet> FetchPlanetAsync(string url)
         {
-            List<People> person = await GetPeopleList();
+            var response = await _httpClient.GetAsync(url);
+            response.EnsureSuccessStatusCode();
+            var json = await response.Content.ReadAsStringAsync();
+            return JsonSerializer.Deserialize<Planet>(json);
+        }
+
+        private async Task<List<Species>> FetchSpeciesAsync(List<string> urls)
+        {
+            var speciesList = new List<Species>();
+
+            foreach (var url in urls)
+            {
+                var response = await _httpClient.GetAsync(url);
+                response.EnsureSuccessStatusCode();
+                var json = await response.Content.ReadAsStringAsync();
+                speciesList.Add(JsonSerializer.Deserialize<Species>(json));
+
+            }
+            return speciesList;
+        }
+
+        public async Task<List<People>> FilterPeopleList(List<People> peopleList, string nameFilter, string speciesFilter, string planetFilter)
+        {
+            List<People> person = peopleList;
 
             var trimmedNameFilter = nameFilter?.Trim().ToLower() ?? string.Empty;
-            var trimmedHeightFilter = heightFilter?.Trim().ToLower() ?? string.Empty;
-            var trimmedMassFilter = massFilter?.Trim().ToLower() ?? string.Empty;
+            var trimmedSpeciesFilter = speciesFilter?.Trim().ToLower() ?? string.Empty;
+            var trimmedPlanetFilter = planetFilter?.Trim().ToLower() ?? string.Empty;
 
             var filteredList = person.AsQueryable();
 
@@ -51,18 +113,45 @@ namespace BlazorApp2.Services
             {
                 filteredList = filteredList.Where(p => p.Name.ToLower().Contains(trimmedNameFilter));
             }
-            if (!string.IsNullOrEmpty(trimmedHeightFilter))
+
+            if (!string.IsNullOrEmpty(trimmedSpeciesFilter))
             {
-                filteredList = filteredList.Where(p => p.Height.ToLower().Contains(trimmedHeightFilter));
+                filteredList = filteredList.Where(p => p.Species != null && p.Species.Any(s => s.Name != null && s.Name.ToLower().Contains(trimmedSpeciesFilter)));
             }
-            if (!string.IsNullOrEmpty(trimmedMassFilter))
+
+            if (!string.IsNullOrEmpty(trimmedPlanetFilter))
             {
-                filteredList = filteredList.Where(p => p.Mass.ToLower().Contains(trimmedMassFilter));
+                filteredList = filteredList.Where(p => p.Planet != null && p.Planet.Name != null && p.Planet.Name.ToLower().Contains(trimmedPlanetFilter));
             }
+
             return filteredList.ToList();
         }
 
-    }
+        private async Task MapImagesToList(List<People> peopleList)
+        {
+            string imageFolderPath = Path.Combine("wwwroot", "Images", "StarWarsCharacters");
+            string placeholderImagePath = $"/Images/StarWarsCharacters/placeholder.png";
 
+            foreach (var person in peopleList)
+            {
+                var normalizedPersonName = person.Name.ToLower().Replace(" ", "-");
+                var imageFile = Directory.GetFiles(imageFolderPath)
+                    .FirstOrDefault(file =>
+                    {
+                        var fileNameWithoutExtension = Path.GetFileNameWithoutExtension(file).ToLower().Replace(" ", "-");
+                        return fileNameWithoutExtension == normalizedPersonName;
+                    });
+
+                if (imageFile != null)
+                {
+                    person.ImgSrc = $"/Images/StarWarsCharacters/{Path.GetFileName(imageFile)}";
+                }
+                else
+                {
+                    person.ImgSrc = placeholderImagePath;
+                }
+            }
+        }
+    }
 }
 
