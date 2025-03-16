@@ -88,7 +88,7 @@
         </tbody>
     </table>
 
-    <!-- Modal Overlay prototype -->
+    <!-- Modal Overlay -->
     <div class="modal-sw-overlay @(isModalVisible ? "show" : "")" @onclick="CloseModal">
         <div class="modal-sw-content" @onclick:stopPropagation>
             <h2>@(_selectedModalPerson?.Name ?? "")</h2>
@@ -97,6 +97,9 @@
                 <div>
                     <img src="@_selectedModalPerson.ImgSrc" />
                     <hr/>
+                    <span>Species:     @_selectedModalPerson</span><br />
+                    <span>Homeworld:     @_selectedModalPerson</span><br />
+
                     <span>Gender:     @_selectedModalPerson.Gender</span><br />
                     <span>Birthyear: @_selectedModalPerson.BirthYear</span><br />
                     <span>Height: @_selectedModalPerson.Height</span><br />
@@ -230,39 +233,4 @@
             _errorMessage = "An unexpected error occurred. Please try again later.";
         }
     }
-
-
-    // //Mit forsøg på debounce
-    // private Timer? _debounceTimer;
-    // private const int DebounceDelay = 500;
-    // private async Task ApplyFiltersAsync()
-    // {
-    //     //if running
-    //     _debounceTimer?.Dispose();
-
-    //     _debounceTimer = new Timer(async _ =>
-    //     {
-    //         await InvokeAsync(async () =>
-    //         {
-    //             try
-    //             {
-    //                 IsFiltering = true;
-    //                 StateHasChanged();
-
-    //                 _filteredPersonList = await _swapiService.FilterPeopleList(_personList,
-    //                     _inputFilterName, _inputFilterHeight, _inputFilterMass);
-
-    //                 CurrentPage = 1;
-    //                 LoadPage(CurrentPage);
-    //             }
-    //             finally
-    //             {
-    //                 IsFiltering = false;
-    //                 StateHasChanged();
-
-    //                 _debounceTimer.Dispose();
-    //             }
-    //         });
-    //     }, null, DebounceDelay, Timeout.Infinite);
-    // }
 }

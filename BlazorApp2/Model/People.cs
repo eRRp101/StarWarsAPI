@@ -7,7 +7,7 @@ namespace BlazorApp2.Model
     public class People
     {
         public string ImgSrc { get; set; }
-        
+
         [JsonPropertyName("name")]
         public string Name { get; set; }
 
@@ -31,11 +31,22 @@ namespace BlazorApp2.Model
 
         [JsonPropertyName("gender")]
         public string Gender { get; set; }
+
+        [JsonPropertyName("homeworld")]
+        public string HomeworldUrl { get; set; } 
+
+        [JsonPropertyName("species")]
+        public List<string> SpeciesUrls { get; set; } 
+        public Planet Homeworld { get; set; }
+        public List<Species> Species { get; set; }
     }
 
-    public class PersonWrapper : IWrapper
+    public class PeopleWrapper
     {
         [JsonPropertyName("results")]
-        public List<People> PersonList { get; set; }
+        public List<People> Results { get; set; }
+
+        [JsonPropertyName("next")]
+        public string NextPage { get; set; }
     }
 }

@@ -7,14 +7,13 @@ namespace BlazorApp2.Services
     {
         private static readonly HttpClient _httpClient = new HttpClient();
         private readonly string _apiBaseUrl = "https://swapi.dev/api/";
-
         private readonly ApiExceptionService _apiExceptionService;
 
-        
-        public SWAPIService(ApiExceptionService apiException)
+        public SWAPIService(ApiExceptionService apiExceptionService)
         {
-            apiException = _apiExceptionService;
+            _apiExceptionService = apiExceptionService;
         }
+
         public async Task<List<People>> GetPeopleList()
         {
             var peopleList = new List<People>();
@@ -22,29 +21,43 @@ namespace BlazorApp2.Services
 
             try
             {
-                while (!string.IsNullOrEmpty(nextPageUrl))
+                do
                 {
                     var response = await _httpClient.GetAsync(nextPageUrl);
-                    response.EnsureSuccessStatusCode(); //Throws HttpRequestException on false
+                    response.EnsureSuccessStatusCode(); // Throws HttpRequestException on failure
 
                     var responseBody = await response.Content.ReadAsStringAsync();
-                    var page = JsonSerializer.Deserialize<SWAPIpage>(responseBody);
-                    var personWrapper = JsonSerializer.Deserialize<PersonWrapper>(responseBody);
+                    var peopleWrapper = JsonSerializer.Deserialize<PeopleWrapper>(responseBody);
 
-                    if (personWrapper?.PersonList != null)
+                    if (peopleWrapper?.Results != null)
                     {
-                        peopleList.AddRange(personWrapper.PersonList);
+                        foreach (var person in peopleWrapper.Results)
+                        {
+                            if (!string.IsNullOrEmpty(person.HomeworldUrl))
+                            {
+                                person.Homeworld = await FetchPlanetAsync(person.HomeworldUrl);
+                            }
+
+                            if (person.SpeciesUrls != null && person.SpeciesUrls.Any())
+                            {
+                                person.Species = await FetchSpeciesAsync(person.SpeciesUrls);
+                            }
+
+                            peopleList.Add(person);
+                        }
                     }
 
-                    nextPageUrl = page?.NextPage;
+                    // Get the next page URL
+                    nextPageUrl = peopleWrapper?.NextPage;
                 }
+                while (!string.IsNullOrEmpty(nextPageUrl));
+
                 await MapImagesToList(peopleList);
             }
-
             catch (HttpRequestException ex)
             {
                 _apiExceptionService.LogException(ex, "HTTP request failed");
-                throw new ApiServiceException("Failed to connect to the API. Please check endpoint or your internet connection.", ex);
+                throw new ApiServiceException("Failed to connect to the API. Please check the endpoint or your internet connection.", ex);
             }
             catch (JsonException ex)
             {
@@ -58,6 +71,27 @@ namespace BlazorApp2.Services
             }
 
             return peopleList;
+        }
+
+        private async Task<Planet> FetchPlanetAsync(string url)
+        {
+            var response = await _httpClient.GetAsync(url);
+            response.EnsureSuccessStatusCode();
+            var json = await response.Content.ReadAsStringAsync();
+            return JsonSerializer.Deserialize<Planet>(json);
+        }
+
+        private async Task<List<Species>> FetchSpeciesAsync(List<string> urls)
+        {
+            var speciesList = new List<Species>();
+            foreach (var url in urls)
+            {
+                var response = await _httpClient.GetAsync(url);
+                response.EnsureSuccessStatusCode();
+                var json = await response.Content.ReadAsStringAsync();
+                speciesList.Add(JsonSerializer.Deserialize<Species>(json));
+            }
+            return speciesList;
         }
 
         public async Task<List<People>> FilterPeopleList(List<People> peopleList, string nameFilter, string heightFilter, string massFilter)
