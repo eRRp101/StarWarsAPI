@@ -1,5 +1,6 @@
 ﻿@page "/SWAPI"
 @inject ISWAPIService _swapiService;
+@inject IDebounceService _debounceService;
 
 <PageTitle>Star Wars Characters</PageTitle>
 
@@ -27,36 +28,38 @@
         <thead>
             <tr>
                 <th>
-                    <div style="display: flex; align-items: baseline; gap: 200px;">
+                    <div class="search-field-sw">
                         Name
                         <input class="form-control"
                         type="text"
                         @bind="_inputFilterName"
                         @bind:event="oninput"
                         @bind:after="ApplyFiltersAsync"
-                        placeholder="Filter by name..." />
+                        placeholder="Search by name..." />
                     </div>
                 </th>
                 <th>
-                    <div style="display: flex; align-items: baseline; gap: 200px;">
+                    <div class="search-field-sw">
                         Height
                         <input class="form-control"
                         type="text"
                         @bind="_inputFilterHeight"
                         @bind:event="oninput"
                         @bind:after="ApplyFiltersAsync"
-                        placeholder="Filter by height..." />
+                        placeholder="Search by height..." />
                     </div>
                 </th>
                 <th>
-                    <div style="display: flex; align-items: baseline; gap: 200px;">
-                        Mass
-                        <input class="form-control"
-                        type="text"
-                        @bind="_inputFilterMass"
-                        @bind:event="oninput"
-                        @bind:after="ApplyFiltersAsync"
-                        placeholder="Filter by mass..." />
+                    <div class="header-container-sw">
+                        <div class="search-field-sw">
+                            Mass
+                            <input class="form-control"
+                                   type="text"
+                                   @bind="_inputFilterMass"
+                                   @bind:event="oninput"
+                                   @bind:after="ApplyFiltersAsync"
+                                   placeholder="Search by mass..." />
+                        </div>
                     </div>
                 </th>
             </tr>
@@ -88,7 +91,7 @@
 
     <div class="text-center m-3">
         <button class="btn-sw" @onclick="PreviousPage" disabled="@(!CanGoToPreviousPage)">Previous</button>
-        <span class="mx-2">Page @CurrentPage of @TotalPages</span>
+        <span class="mx-2 text-white">Page @CurrentPage of @TotalPages</span>
         <button class="btn-sw" @onclick="NextPage" disabled="@(!CanGoToNextPage)">Next</button>
     </div>
     <hr />
@@ -158,41 +161,6 @@
     private string? _inputFilterHeight;
     private string? _inputFilterMass;
 
-    private Timer? _debounceTimer;
-    private const int DebounceDelay = 500;
-
-    //Nu med actual debouncing (i think)
-    private async Task ApplyFiltersAsync()
-    {
-        //if running
-        _debounceTimer?.Dispose();
-
-        _debounceTimer = new Timer(async _ =>
-        {
-            await InvokeAsync(async () =>
-            {
-                try
-                {
-                    IsFiltering = true; 
-                    StateHasChanged(); 
-
-                    _filteredPersonList = await _swapiService.FilterPeopleList(_personList,
-                        _inputFilterName, _inputFilterHeight, _inputFilterMass);
-
-                    CurrentPage = 1;
-                    LoadPage(CurrentPage);
-                }
-                finally
-                {
-                    IsFiltering = false; 
-                    StateHasChanged(); 
-
-                    _debounceTimer.Dispose();
-                }
-            });
-        }, null, DebounceDelay, Timeout.Infinite); 
-    }
-
     private void ClearFilters()
     {
         _inputFilterName = string.Empty;
@@ -203,6 +171,18 @@
         LoadPage(CurrentPage);
     }
 
+    private async Task ApplyFiltersAsync()
+    {
+        await _debounceService.DebounceAsync(async () =>
+        {
+            IsFiltering = true;
+            _filteredPersonList = await _swapiService.SearchPeopleList(_personList, _inputFilterName);
+            CurrentPage = 1;
+            LoadPage(CurrentPage);
+        });
+        IsFiltering = false;
+    }
+
     //
     private List<People> _personList = new();
     private List<People> _filteredPersonList = new();
@@ -210,11 +190,46 @@
     protected override async Task OnInitializedAsync()
     {
         isLoading = true;
-        // Task.Delay(2000);
+        // Task.Delay(2000); //loading animation display
         _personList = await _swapiService.GetPeopleList();
         _filteredPersonList = new List<People>(_personList);
+        _debounceService = new DebounceService();
         LoadPage(CurrentPage);
         isLoading = false;
         await base.OnInitializedAsync();
     }
+
+    // //Mit forsøg på debounce
+    // private Timer? _debounceTimer;
+    // private const int DebounceDelay = 500;
+    // private async Task ApplyFiltersAsync()
+    // {
+    //     //if running
+    //     _debounceTimer?.Dispose();
+
+    //     _debounceTimer = new Timer(async _ =>
+    //     {
+    //         await InvokeAsync(async () =>
+    //         {
+    //             try
+    //             {
+    //                 IsFiltering = true;
+    //                 StateHasChanged();
+
+    //                 _filteredPersonList = await _swapiService.FilterPeopleList(_personList,
+    //                     _inputFilterName, _inputFilterHeight, _inputFilterMass);
+
+    //                 CurrentPage = 1;
+    //                 LoadPage(CurrentPage);
+    //             }
+    //             finally
+    //             {
+    //                 IsFiltering = false;
+    //                 StateHasChanged();
+
+    //                 _debounceTimer.Dispose();
+    //             }
+    //         });
+    //     }, null, DebounceDelay, Timeout.Infinite);
+    // }
 }

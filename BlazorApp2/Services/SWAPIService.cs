@@ -30,8 +30,8 @@ namespace BlazorApp2.Services
 
                     nextPageUrl = page?.NextPage;
                 }
-                await MapImagesToPeople(peopleList);
 
+                await MapImagesToList(peopleList);
             }
             catch (HttpRequestException ex)
             {
@@ -49,39 +49,49 @@ namespace BlazorApp2.Services
             return peopleList;
         }
 
-        public async Task<List<People>> FilterPeopleList(List<People> peopleList, string nameFilter, string heightFilter, string massFilter)
+        //public async Task<List<People>> FilterPeopleList(List<People> peopleList, string nameFilter, string heightFilter, string massFilter)
+        //{
+        //    List<People> person = peopleList;
+
+        //    var trimmedNameFilter = nameFilter?.Trim().ToLower() ?? string.Empty;
+        //    var trimmedHeightFilter = heightFilter?.Trim().ToLower() ?? string.Empty;
+        //    var trimmedMassFilter = massFilter?.Trim().ToLower() ?? string.Empty;
+
+        //    var filteredList = person.AsQueryable();
+
+        //    if (!string.IsNullOrEmpty(trimmedNameFilter))
+        //    {
+        //        filteredList = filteredList.Where(p => p.Name.ToLower().Contains(trimmedNameFilter));
+        //    }
+        //    if (!string.IsNullOrEmpty(trimmedHeightFilter))
+        //    {
+        //        filteredList = filteredList.Where(p => p.Height.ToLower().Contains(trimmedHeightFilter));
+        //    }
+        //    if (!string.IsNullOrEmpty(trimmedMassFilter))
+        //    {
+        //        filteredList = filteredList.Where(p => p.Mass.ToLower().Contains(trimmedMassFilter));
+        //    }
+        //    return filteredList.ToList();
+        //}
+
+        public async Task<List<People>> SearchPeopleList(List<People> peopleList, string name)
         {
             List<People> person = peopleList;
 
-            var trimmedNameFilter = nameFilter?.Trim().ToLower() ?? string.Empty;
-            var trimmedHeightFilter = heightFilter?.Trim().ToLower() ?? string.Empty;
-            var trimmedMassFilter = massFilter?.Trim().ToLower() ?? string.Empty;
-
+            var searchName = name.Trim().ToLower() ?? string.Empty;
             var filteredList = person.AsQueryable();
 
-            if (!string.IsNullOrEmpty(trimmedNameFilter))
+            if (!string.IsNullOrEmpty(searchName))
             {
-                filteredList = filteredList.Where(p => p.Name.ToLower().Contains(trimmedNameFilter));
-            }
-            if (!string.IsNullOrEmpty(trimmedHeightFilter))
-            {
-                filteredList = filteredList.Where(p => p.Height.ToLower().Contains(trimmedHeightFilter));
-            }
-            if (!string.IsNullOrEmpty(trimmedMassFilter))
-            {
-                filteredList = filteredList.Where(p => p.Mass.ToLower().Contains(trimmedMassFilter));
+                filteredList = filteredList.Where(p => p.Name.ToLower().Contains(searchName));
             }
             return filteredList.ToList();
         }
-        /// <summary>
-        /// Mine diverse webscraping forsøg på at by-pass anti-webscraping på starwars.com/databank slog fejl
-        /// Så det blev et af de tilfælde hvor det var hurtigere at gøre det manuelt
-        /// end at bruge flere timer på at automatisere det, hehe. 
-        /// </summary>
-        public async Task MapImagesToPeople(List<People> peopleList)
+
+        private async Task MapImagesToList(List<People> peopleList)
         {
-            string imageFolderPath = Path.Combine("wwwroot", "css", "Images", "StarWarsCharacters");
-            string placeholderImagePath = Path.Combine(imageFolderPath, "placeholder.png");
+            string imageFolderPath = Path.Combine("wwwroot", "Images", "StarWarsCharacters");
+            string placeholderImagePath = $"/Images/StarWarsCharacters/placeholder.png";
 
             foreach (var person in peopleList)
             {
@@ -89,18 +99,17 @@ namespace BlazorApp2.Services
                 var imageFile = Directory.GetFiles(imageFolderPath)
                     .FirstOrDefault(file =>
                     {
-                        var fileNameWithoutExtension = Path.GetFileNameWithoutExtension(file).ToLower();
+                        var fileNameWithoutExtension = Path.GetFileNameWithoutExtension(file).ToLower().Replace(" ", "-");
                         return fileNameWithoutExtension == normalizedPersonName;
                     });
 
                 if (imageFile != null)
                 {
-                    person.ImgSrc = $"/css/Images/StarWarsCharacters/{Path.GetFileName(imageFile)}.jpeg";
+                    person.ImgSrc = $"/Images/StarWarsCharacters/{Path.GetFileName(imageFile)}";
                 }
                 else
                 {
-                    Console.WriteLine($"Image not found for: {person.Name}. Using placeholder.");
-                    person.ImgSrc = "/css/Images/StarWarsCharacters/placeholder.png";
+                    person.ImgSrc = placeholderImagePath;
                 }
             }
         }

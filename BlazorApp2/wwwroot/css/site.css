@@ -79,6 +79,15 @@
 }
 
 /*Table*/
+/* input styling*/
+
+.header-container-sw {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    width: 100%;
+}
+
 .star-wars-table {
     width: 100%;
     table-layout: fixed;
@@ -95,16 +104,23 @@
         background-color: #1a1a1a;
         border-bottom: 1px solid #333;
         font-family: Calibri;
-        user-select: none;
+        user-select: none;  
     }
 
     .star-wars-table th {
         padding: 12px;
+        padding-right: 100px;
         text-align: left;
         font-size: 1.1rem;
         color: var(--swOrange);
         border-right: 1px solid #333;
     }
+
+        .search-field-sw {
+            display: flex;
+            align-items: baseline;
+            width: 50%;
+        }
 
         .star-wars-table th:last-child {
             border-right: none;
@@ -176,34 +192,35 @@
     justify-content: center;
     align-items: center;
     z-index: 1000; 
-    animation: fadeIn 0.3s ease-in-out; 
+    animation: fadeIn 0.2s ease-in-out;
 }
 
 .modal-sw-content {
-    background-color: #121212; 
+    background-color: #121212;
     padding: 20px;
     border-radius: 10px;
-    border: 1px solid #f1b021; 
-    box-shadow: 0 0 10px rgba(241, 176, 33, 0.5); 
+    border: 1px solid #f1b021;
+    box-shadow: 0 0 10px rgba(241, 176, 33, 0.5);
     max-width: 500px;
     width: 90%;
-    animation: fadeIn 0.3s ease-in-out; 
-    color: white; 
+    color: white;
 }
 
     .modal-sw-content h2 {
-        color: var(--swOrange); 
+        color: var(--swOrange);
+        text-align: center
     }
 
     .modal-sw-content img {
-        height: 100px;
-        width: 120px;
+        width: 100%;
+        height: auto;
+        border-radius: 0px;
+        mask-image: radial-gradient( circle, rgba(0, 0, 0, 1) 10%, rgba(0, 0, 0, 0) 100%);
     }
 
 .modal-sw-overlay.show {
     display: flex; 
 }
-
 /* misc*/
 hr {
     height: 3px!important;
@@ -233,8 +250,18 @@ hr {
     }
 }
 
+@keyframes fadeOut {
+    from {
+        opacity: 1;
+    }
+
+    to {
+        opacity: 0;
+    }
+}
+
 .background-starfield {
-    background-image: url('Images/Backgrounds/starfield_background.png');
+    background-image: url('../Images/Backgrounds/starfield_background.png');
     background-size: 100% 100%;
     background-position: center;
     background-attachment: fixed;
@@ -301,7 +328,6 @@ hr {
         opacity: 0.65;
     }
 
-/* input styling*/
 .form-control {
     background-color: transparent;
     color: white !important;
