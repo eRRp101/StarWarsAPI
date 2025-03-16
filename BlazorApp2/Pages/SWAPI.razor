@@ -1,8 +1,16 @@
 ﻿@page "/SWAPI"
 @inject ISWAPIService _swapiService;
 @inject IDebounceService _debounceService;
+@inject ApiExceptionService _apiExceptionService;
 
 <PageTitle>Star Wars Characters</PageTitle>
+
+@if (_errorMessage != null)
+{
+    <div class="modal-sw-content">
+        @_errorMessage
+    </div>
+}
 
 <div class="component-background">
 
@@ -32,11 +40,11 @@
                         <span class="fs-5">Name</span>
                         <div class="search-field-sw">
                             <input class="form-control"
-                                   type="text"
-                                   @bind="_inputFilterName"
-                                   @bind:event="oninput"
-                                   @bind:after="ApplyFiltersAsync"
-                                   placeholder="Search by name..." />
+                            type="text"
+                            @bind="_inputFilterName"
+                            @bind:event="oninput"
+                            @bind:after="ApplyFiltersAsync"
+                            placeholder="Search by name..." />
                         </div>
                     </div>
                 </th>
@@ -45,11 +53,11 @@
                         <span class="fs-5">Height</span>
                         <div class="search-field-sw">
                             <input class="form-control"
-                                   type="text"
-                                   @bind="_inputFilterHeight"
-                                   @bind:event="oninput"
-                                   @bind:after="ApplyFiltersAsync"
-                                   placeholder="Search by height..." />
+                            type="text"
+                            @bind="_inputFilterHeight"
+                            @bind:event="oninput"
+                            @bind:after="ApplyFiltersAsync"
+                            placeholder="Search by height..." />
                         </div>
                     </div>
                 </th>
@@ -58,11 +66,11 @@
                         <span class="fs-5">Mass</span>
                         <div class="search-field-sw">
                             <input class="form-control"
-                                   type="text"
-                                   @bind="_inputFilterMass"
-                                   @bind:event="oninput"
-                                   @bind:after="ApplyFiltersAsync"
-                                   placeholder="Search by mass..." />
+                            type="text"
+                            @bind="_inputFilterMass"
+                            @bind:event="oninput"
+                            @bind:after="ApplyFiltersAsync"
+                            placeholder="Search by mass..." />
                         </div>
                     </div>
                 </th>
@@ -163,8 +171,10 @@
         _selectedModalPerson = null;
     }
 
-    bool isLoading = false;
-    bool IsFiltering = false;
+    //UI State
+    private bool isLoading = false;
+    private bool IsFiltering = false;
+    private string _errorMessage = String.Empty;
 
     //Filters
     private string? _inputFilterName;
@@ -199,15 +209,28 @@
 
     protected override async Task OnInitializedAsync()
     {
-        isLoading = true;
-        // Task.Delay(2000); //loading animation display
-        _personList = await _swapiService.GetPeopleList();
-        _filteredPersonList = new List<People>(_personList);
-        _debounceService = new DebounceService();
-        LoadPage(CurrentPage);
-        isLoading = false;
-        await base.OnInitializedAsync();
+        try
+        {
+            isLoading = true;
+            StateHasChanged();
+            // Task.Delay(2000); //loading animation display
+            _personList = await _swapiService.GetPeopleList();
+            _filteredPersonList = new List<People>(_personList);
+            _debounceService = new DebounceService();
+            LoadPage(CurrentPage);
+            isLoading = false;
+            await base.OnInitializedAsync();
+        }
+        catch (ApiServiceException ex)
+        {
+            _errorMessage = _apiExceptionService.GetUserFriendlyErrorMessage(ex);
+        }
+        catch (Exception ex)
+        {
+            _errorMessage = "An unexpected error occurred. Please try again later.";
+        }
     }
+
 
     // //Mit forsøg på debounce
     // private Timer? _debounceTimer;

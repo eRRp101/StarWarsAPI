@@ -7,6 +7,14 @@ namespace BlazorApp2.Services
     {
         private static readonly HttpClient _httpClient = new HttpClient();
         private readonly string _apiBaseUrl = "https://swapi.dev/api/";
+
+        private readonly ApiExceptionService _apiExceptionService;
+
+        
+        public SWAPIService(ApiExceptionService apiException)
+        {
+            apiException = _apiExceptionService;
+        }
         public async Task<List<People>> GetPeopleList()
         {
             var peopleList = new List<People>();
@@ -17,7 +25,7 @@ namespace BlazorApp2.Services
                 while (!string.IsNullOrEmpty(nextPageUrl))
                 {
                     var response = await _httpClient.GetAsync(nextPageUrl);
-                    response.EnsureSuccessStatusCode(); // Exception if no response
+                    response.EnsureSuccessStatusCode(); //Throws HttpRequestException on false
 
                     var responseBody = await response.Content.ReadAsStringAsync();
                     var page = JsonSerializer.Deserialize<SWAPIpage>(responseBody);
@@ -30,20 +38,23 @@ namespace BlazorApp2.Services
 
                     nextPageUrl = page?.NextPage;
                 }
-
                 await MapImagesToList(peopleList);
             }
+
             catch (HttpRequestException ex)
             {
-                Console.WriteLine($"HTTP request error: {ex.Message}");
+                _apiExceptionService.LogException(ex, "HTTP request failed");
+                throw new ApiServiceException("Failed to connect to the API. Please check endpoint or your internet connection.", ex);
             }
             catch (JsonException ex)
             {
-                Console.WriteLine($"JSON deserialization error: {ex.Message}");
+                _apiExceptionService.LogException(ex, "JSON deserialization failed");
+                throw new ApiServiceException("Failed to process the API response. The data may be invalid.", ex);
             }
             catch (Exception ex)
             {
-                Console.WriteLine($"Unexpected error: {ex.Message}");
+                _apiExceptionService.LogException(ex, "Unexpected error");
+                throw new ApiServiceException("An unexpected error occurred. Please try again later.", ex);
             }
 
             return peopleList;
@@ -73,20 +84,6 @@ namespace BlazorApp2.Services
             }
             return filteredList.ToList();
         }
-
-        //public async Task<List<People>> SearchPeopleList(List<People> peopleList, string name)
-        //{
-        //    List<People> person = peopleList;
-
-        //    var searchName = name.Trim().ToLower() ?? string.Empty;
-        //    var filteredList = person.AsQueryable();
-
-        //    if (!string.IsNullOrEmpty(searchName))
-        //    {
-        //        filteredList = filteredList.Where(p => p.Name.ToLower().Contains(searchName));
-        //    }
-        //    return filteredList.ToList();
-        //}
 
         private async Task MapImagesToList(List<People> peopleList)
         {
