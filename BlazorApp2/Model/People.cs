@@ -6,8 +6,7 @@ namespace BlazorApp2.Model
 {
     public class People
     {
-        private string _baseImgUrl = $"https://www.starwars.com/databank/";
-        public string ImgUrl { get { return _baseImgUrl + Name; } }
+        public string ImgSrc { get; set; }
         
         [JsonPropertyName("name")]
         public string Name { get; set; }

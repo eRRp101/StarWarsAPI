@@ -9,7 +9,6 @@
     --userSelectNone: none;
 }
 
-
 .table-active {
     background-color: rgba(0, 123, 255, 0.25);
 }
@@ -194,6 +193,11 @@
 
     .modal-sw-content h2 {
         color: var(--swOrange); 
+    }
+
+    .modal-sw-content img {
+        height: 100px;
+        width: 120px;
     }
 
 .modal-sw-overlay.show {

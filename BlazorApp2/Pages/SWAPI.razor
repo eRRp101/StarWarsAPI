@@ -70,7 +70,7 @@
                     <td>@person.Mass</td>
                 </tr>
             }
-        </tbody>
+        </tbody>    
     </table>
 
     <!-- Modal Overlay -->
@@ -80,8 +80,7 @@
             @if (_selectedModalPerson != null)
             {
                 <div>
-                    @_selectedModalPerson.Name is a @_selectedModalPerson.Height cm tall @_selectedModalPerson.Gender, born in @_selectedModalPerson.BirthYear.
-                    Characteristics include @_selectedModalPerson.HairColor hair, @_selectedModalPerson.EyeColor eyes, and a @_selectedModalPerson.SkinColor skin color.
+                    <img src="@_selectedModalPerson.ImgSrc"/>
                 </div>
             }
         </div>
@@ -211,7 +210,7 @@
     protected override async Task OnInitializedAsync()
     {
         isLoading = true;
-        // Task.Delay(2000); //bare for at vise loading idé, en spinner kan man altid lave 
+        // Task.Delay(2000);
         _personList = await _swapiService.GetPeopleList();
         _filteredPersonList = new List<People>(_personList);
         LoadPage(CurrentPage);

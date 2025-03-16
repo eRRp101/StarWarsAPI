@@ -8,6 +8,7 @@ var builder = WebApplication.CreateBuilder(args);
 builder.Services.AddRazorPages();
 builder.Services.AddServerSideBlazor();
 builder.Services.AddSingleton<ISWAPIService, SWAPIService>();
+builder.Services.AddSingleton<IDebounceService, DebounceService>();
 
 var app = builder.Build();
 

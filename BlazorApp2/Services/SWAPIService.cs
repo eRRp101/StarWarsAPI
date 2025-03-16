@@ -30,6 +30,8 @@ namespace BlazorApp2.Services
 
                     nextPageUrl = page?.NextPage;
                 }
+                await MapImagesToPeople(peopleList);
+
             }
             catch (HttpRequestException ex)
             {
@@ -70,6 +72,37 @@ namespace BlazorApp2.Services
                 filteredList = filteredList.Where(p => p.Mass.ToLower().Contains(trimmedMassFilter));
             }
             return filteredList.ToList();
+        }
+        /// <summary>
+        /// Mine diverse webscraping forsøg på at by-pass anti-webscraping på starwars.com/databank slog fejl
+        /// Så det blev et af de tilfælde hvor det var hurtigere at gøre det manuelt
+        /// end at bruge flere timer på at automatisere det, hehe. 
+        /// </summary>
+        public async Task MapImagesToPeople(List<People> peopleList)
+        {
+            string imageFolderPath = Path.Combine("wwwroot", "css", "Images", "StarWarsCharacters");
+            string placeholderImagePath = Path.Combine(imageFolderPath, "placeholder.png");
+
+            foreach (var person in peopleList)
+            {
+                var normalizedPersonName = person.Name.ToLower().Replace(" ", "-");
+                var imageFile = Directory.GetFiles(imageFolderPath)
+                    .FirstOrDefault(file =>
+                    {
+                        var fileNameWithoutExtension = Path.GetFileNameWithoutExtension(file).ToLower();
+                        return fileNameWithoutExtension == normalizedPersonName;
+                    });
+
+                if (imageFile != null)
+                {
+                    person.ImgSrc = $"/css/Images/StarWarsCharacters/{Path.GetFileName(imageFile)}.jpeg";
+                }
+                else
+                {
+                    Console.WriteLine($"Image not found for: {person.Name}. Using placeholder.");
+                    person.ImgSrc = "/css/Images/StarWarsCharacters/placeholder.png";
+                }
+            }
         }
     }
 }
