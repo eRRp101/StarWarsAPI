@@ -49,44 +49,44 @@ namespace BlazorApp2.Services
             return peopleList;
         }
 
-        //public async Task<List<People>> FilterPeopleList(List<People> peopleList, string nameFilter, string heightFilter, string massFilter)
-        //{
-        //    List<People> person = peopleList;
-
-        //    var trimmedNameFilter = nameFilter?.Trim().ToLower() ?? string.Empty;
-        //    var trimmedHeightFilter = heightFilter?.Trim().ToLower() ?? string.Empty;
-        //    var trimmedMassFilter = massFilter?.Trim().ToLower() ?? string.Empty;
-
-        //    var filteredList = person.AsQueryable();
-
-        //    if (!string.IsNullOrEmpty(trimmedNameFilter))
-        //    {
-        //        filteredList = filteredList.Where(p => p.Name.ToLower().Contains(trimmedNameFilter));
-        //    }
-        //    if (!string.IsNullOrEmpty(trimmedHeightFilter))
-        //    {
-        //        filteredList = filteredList.Where(p => p.Height.ToLower().Contains(trimmedHeightFilter));
-        //    }
-        //    if (!string.IsNullOrEmpty(trimmedMassFilter))
-        //    {
-        //        filteredList = filteredList.Where(p => p.Mass.ToLower().Contains(trimmedMassFilter));
-        //    }
-        //    return filteredList.ToList();
-        //}
-
-        public async Task<List<People>> SearchPeopleList(List<People> peopleList, string name)
+        public async Task<List<People>> FilterPeopleList(List<People> peopleList, string nameFilter, string heightFilter, string massFilter)
         {
             List<People> person = peopleList;
 
-            var searchName = name.Trim().ToLower() ?? string.Empty;
+            var trimmedNameFilter = nameFilter?.Trim().ToLower() ?? string.Empty;
+            var trimmedHeightFilter = heightFilter?.Trim().ToLower() ?? string.Empty;
+            var trimmedMassFilter = massFilter?.Trim().ToLower() ?? string.Empty;
+
             var filteredList = person.AsQueryable();
 
-            if (!string.IsNullOrEmpty(searchName))
+            if (!string.IsNullOrEmpty(trimmedNameFilter))
             {
-                filteredList = filteredList.Where(p => p.Name.ToLower().Contains(searchName));
+                filteredList = filteredList.Where(p => p.Name.ToLower().Contains(trimmedNameFilter));
+            }
+            if (!string.IsNullOrEmpty(trimmedHeightFilter))
+            {
+                filteredList = filteredList.Where(p => p.Height.ToLower().Contains(trimmedHeightFilter));
+            }
+            if (!string.IsNullOrEmpty(trimmedMassFilter))
+            {
+                filteredList = filteredList.Where(p => p.Mass.ToLower().Contains(trimmedMassFilter));
             }
             return filteredList.ToList();
         }
+
+        //public async Task<List<People>> SearchPeopleList(List<People> peopleList, string name)
+        //{
+        //    List<People> person = peopleList;
+
+        //    var searchName = name.Trim().ToLower() ?? string.Empty;
+        //    var filteredList = person.AsQueryable();
+
+        //    if (!string.IsNullOrEmpty(searchName))
+        //    {
+        //        filteredList = filteredList.Where(p => p.Name.ToLower().Contains(searchName));
+        //    }
+        //    return filteredList.ToList();
+        //}
 
         private async Task MapImagesToList(List<People> peopleList)
         {

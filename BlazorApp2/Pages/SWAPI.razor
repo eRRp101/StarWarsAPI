@@ -28,31 +28,35 @@
         <thead>
             <tr>
                 <th>
-                    <div class="search-field-sw">
-                        Name
-                        <input class="form-control"
-                        type="text"
-                        @bind="_inputFilterName"
-                        @bind:event="oninput"
-                        @bind:after="ApplyFiltersAsync"
-                        placeholder="Search by name..." />
-                    </div>
-                </th>
-                <th>
-                    <div class="search-field-sw">
-                        Height
-                        <input class="form-control"
-                        type="text"
-                        @bind="_inputFilterHeight"
-                        @bind:event="oninput"
-                        @bind:after="ApplyFiltersAsync"
-                        placeholder="Search by height..." />
+                    <div class="header-container-sw">
+                        <span class="fs-5">Name</span>
+                        <div class="search-field-sw">
+                            <input class="form-control"
+                                   type="text"
+                                   @bind="_inputFilterName"
+                                   @bind:event="oninput"
+                                   @bind:after="ApplyFiltersAsync"
+                                   placeholder="Search by name..." />
+                        </div>
                     </div>
                 </th>
                 <th>
                     <div class="header-container-sw">
+                        <span class="fs-5">Height</span>
                         <div class="search-field-sw">
-                            Mass
+                            <input class="form-control"
+                                   type="text"
+                                   @bind="_inputFilterHeight"
+                                   @bind:event="oninput"
+                                   @bind:after="ApplyFiltersAsync"
+                                   placeholder="Search by height..." />
+                        </div>
+                    </div>
+                </th>
+                <th>
+                    <div class="header-container-sw">
+                        <span class="fs-5">Mass</span>
+                        <div class="search-field-sw">
                             <input class="form-control"
                                    type="text"
                                    @bind="_inputFilterMass"
@@ -73,17 +77,23 @@
                     <td>@person.Mass</td>
                 </tr>
             }
-        </tbody>    
+        </tbody>
     </table>
 
-    <!-- Modal Overlay -->
+    <!-- Modal Overlay prototype -->
     <div class="modal-sw-overlay @(isModalVisible ? "show" : "")" @onclick="CloseModal">
         <div class="modal-sw-content" @onclick:stopPropagation>
-            <h2>@(_selectedModalPerson?.Name ?? "No Name")</h2>
+            <h2>@(_selectedModalPerson?.Name ?? "")</h2>
             @if (_selectedModalPerson != null)
             {
                 <div>
-                    <img src="@_selectedModalPerson.ImgSrc"/>
+                    <img src="@_selectedModalPerson.ImgSrc" />
+                    <hr/>
+                    <span>Gender:     @_selectedModalPerson.Gender</span><br />
+                    <span>Birthyear: @_selectedModalPerson.BirthYear</span><br />
+                    <span>Height: @_selectedModalPerson.Height</span><br />
+                    <span>Mass: @_selectedModalPerson.Mass</span><br />
+                    <hr/>
                 </div>
             }
         </div>
@@ -176,7 +186,7 @@
         await _debounceService.DebounceAsync(async () =>
         {
             IsFiltering = true;
-            _filteredPersonList = await _swapiService.SearchPeopleList(_personList, _inputFilterName);
+            _filteredPersonList = await _swapiService.FilterPeopleList(_personList, _inputFilterName, _inputFilterHeight, _inputFilterMass);
             CurrentPage = 1;
             LoadPage(CurrentPage);
         });

@@ -15,7 +15,7 @@
 
 /* Loading Animation */
 .loader-container {
-    height: 120px; 
+    height: 120px;
     display: flex;
     flex-direction: column;
     justify-content: center;
@@ -78,6 +78,26 @@
     }
 }
 
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+    }
+
+    to {
+        opacity: 1;
+    }
+}
+
+@keyframes fadeOut {
+    from {
+        opacity: 1;
+    }
+
+    to {
+        opacity: 0;
+    }
+}
+
 /*Table*/
 /* input styling*/
 
@@ -99,99 +119,115 @@
     animation: fadeIn 1s ease-in-out;
 }
 
-    /* Table header */
-    .star-wars-table thead {
-        background-color: #1a1a1a;
-        border-bottom: 1px solid #333;
-        font-family: Calibri;
-        user-select: none;  
+/* Header container */
+.header-container-sw {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    width: 100%;
+}
+
+.search-field-sw {
+    display: flex;
+    align-items: center;
+    gap: 20px;
+}
+
+
+.form-control {
+    margin-left: auto;
+    width: 100%;
+}
+
+/* Table header */
+.star-wars-table thead {
+    background-color: #1a1a1a;
+    border-bottom: 1px solid #333;
+    font-family: Calibri;
+    user-select: none;
+}
+
+.star-wars-table th {
+    padding: 12px;
+    text-align: left;
+    font-size: 1.1rem;
+    color: var(--swOrange);
+    border-right: 1px solid #333;
+    position: relative;
+}
+
+    .star-wars-table th:last-child {
+        border-right: none;
     }
 
-    .star-wars-table th {
+/* Table rows */
+.star-wars-table tbody tr {
+    user-select: none;
+    transition: background-color 0.2s ease-in-out;
+}
+
+    .star-wars-table tbody tr:hover {
+        background-color: #1D1D1D;
+    }
+
+/* Table data */
+.star-wars-table td {
+    padding: 10px;
+    border-bottom: 1px solid #333;
+    border-right: 1px solid #333;
+    transition: background 0.1s ease-in-out, transform 0.2s ease-in-out, font-weight 0.2s ease-in-out;
+}
+
+    .star-wars-table td:first-child:hover {
+        font-weight: 500;
+        background-color: #292929;
+        transform: translateX(2px);
+    }
+
+    .star-wars-table td:nth-child(2):hover {
+        font-weight: 500;
+        background-color: #292929;
+        transform: translateX(2px);
+    }
+
+    .star-wars-table td:nth-child(3):hover {
+        font-weight: 500;
+        background-color: #292929;
+        transform: translateX(2px);
+    }
+
+    .star-wars-table td:last-child {
+        border-right: none !important;
+    }
+
+.star-wars-table tbody tr:last-child td {
+    border-bottom: none !important;
+}
+
+/* Table footer */
+.star-wars-table tfoot {
+    background-color: #1a1a1a;
+    border-top: 2px solid #333;
+}
+
+    .star-wars-table tfoot td {
         padding: 12px;
-        padding-right: 100px;
-        text-align: left;
-        font-size: 1.1rem;
+        font-weight: bold;
         color: var(--swOrange);
-        border-right: 1px solid #333;
     }
-
-        .search-field-sw {
-            display: flex;
-            align-items: baseline;
-            width: 50%;
-        }
-
-        .star-wars-table th:last-child {
-            border-right: none;
-        }
-
-    /* Table rows */
-    .star-wars-table tbody tr {
-        user-select: none;
-        transition: background-color 0.2s ease-in-out;
-    }
-
-        .star-wars-table tbody tr:hover {
-            background-color: #1D1D1D;
-        }   
-
-    /* table data*/
-    .star-wars-table td {
-        padding: 10px;
-        border-bottom: 1px solid #333;
-        border-right: 1px solid #333;
-        transition: background 0.1s ease-in-out, transform 0.2s ease-in-out, font-weight 0.2s ease-in-out;
-    }
-
-        .star-wars-table td:first-child:hover {
-            font-weight: 500;
-            background-color: #292929;
-            transform: translateX(2px);
-        }
-        .star-wars-table td:nth-child(2):hover {
-            font-weight: 500;
-            background-color: #292929;
-            transform: translateX(2px);
-        }
-        .star-wars-table td:nth-child(3):hover {
-            font-weight: 500;
-            background-color: #292929;
-            transform: translateX(2px);
-        }
-
-        .star-wars-table td:last-child {
-            border-right: none !important;
-        }
-
-    .star-wars-table tbody tr:last-child td {
-        border-bottom: none !important;
-    }
-
-    /* Table footer */
-    .star-wars-table tfoot {
-        background-color: #1a1a1a;
-        border-top: 2px solid #333;
-    }
-
-        .star-wars-table tfoot td {
-            padding: 12px;
-            font-weight: bold;
-            color: var(--swOrange);
-        }
 
 /* Modal */
 .modal-sw-overlay {
-    display: none; 
+    display: none;
     position: fixed;
     top: 0;
     left: 0;
     width: 100%;
     height: 100%;
-    background-color: rgba(0, 0, 0, 0.8); 
+    background-color: rgba(0, 0, 0, 0.8);
     justify-content: center;
     align-items: center;
-    z-index: 1000; 
+    z-index: 1000;
     animation: fadeIn 0.2s ease-in-out;
 }
 
@@ -219,17 +255,17 @@
     }
 
 .modal-sw-overlay.show {
-    display: flex; 
+    display: flex;
 }
 /* misc*/
 hr {
-    height: 3px!important;
-    color: var(--swOrange)!important;
-    box-shadow: 0 0 5px var(--swOrange)!important; 
+    height: 3px !important;
+    color: var(--swOrange) !important;
+    box-shadow: 0 0 5px var(--swOrange) !important;
 }
 
 .jedi-font {
-    font-family: 'Star Jedi', sans-serif; 
+    font-family: 'Star Jedi', sans-serif;
 }
 
 .component-background {
@@ -238,26 +274,6 @@ hr {
     border-radius: 10px;
     opacity: 0;
     animation: fadeIn 0.25s ease-in-out forwards;
-}
-
-@keyframes fadeIn {
-    from {
-        opacity: 0;
-    }
-
-    to {
-        opacity: 1;
-    }
-}
-
-@keyframes fadeOut {
-    from {
-        opacity: 1;
-    }
-
-    to {
-        opacity: 0;
-    }
 }
 
 .background-starfield {
@@ -291,7 +307,7 @@ hr {
     -moz-user-select: none; /* Firefox */
     -ms-user-select: none; /* Internet Explorer/Edge */
     user-select: none;
-    transition: text-shadow 0.3s ease-in-out; 
+    transition: text-shadow 0.3s ease-in-out;
 }
 
     .h1-sw:hover {
@@ -313,13 +329,14 @@ hr {
     border-radius: 0.25rem;
     transition: background-color 0.15s ease-in-out;
 }
+
     .btn-sw:hover {
         background-color: #292929;
     }
 
     .btn-sw:active {
         background-color: #363636;
-        animation: focus-shadow 0.15s ease-in-out; 
+        animation: focus-shadow 0.15s ease-in-out;
     }
 
     .btn-sw:disabled {
@@ -341,7 +358,7 @@ hr {
 
     .form-control:focus {
         background-color: transparent;
-        border-color: var(--swOrange) !important; 
+        border-color: var(--swOrange) !important;
         box-shadow: 0 0 5px var(--swOrange) !important;
     }
 
@@ -369,11 +386,11 @@ hr {
 
     .nav-link div {
         display: inline-block;
-        transition: transform 0.2s ease-in-out; 
+        transition: transform 0.2s ease-in-out;
     }
 
     .nav-link:hover div {
-        transform: translateX(4px); 
+        transform: translateX(4px);
     }
 
 .navbar-blackgradient {
@@ -396,7 +413,7 @@ hr {
 }
 
 .top-row {
-    background: black !important; 
+    background: black !important;
 }
 
 .nav-scrollable {

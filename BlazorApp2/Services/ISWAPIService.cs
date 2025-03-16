@@ -5,6 +5,6 @@ namespace BlazorApp2.Services
     public interface ISWAPIService
     {
         public Task<List<People>> GetPeopleList();
-        public Task<List<People>> SearchPeopleList(List<People> peopleList, string name);
+        public Task<List<People>> FilterPeopleList(List<People> peopleList, string nameFilter, string heightFilter, string massFilter);
     }
 }
