@@ -33,12 +33,13 @@ namespace BlazorApp2.Model
         public string Gender { get; set; }
 
         [JsonPropertyName("homeworld")]
-        public string HomeworldUrl { get; set; } 
+        public string HomeworldUrl { get; set; }
 
         [JsonPropertyName("species")]
-        public List<string> SpeciesUrls { get; set; } 
-        public Planet Homeworld { get; set; }
-        public List<Species> Species { get; set; }
+        public List<string> SpeciesUrls { get; set; } = new List<string>();
+
+        public Planet Planet { get; set; }
+        public List<Species> Species { get; set; } = new List<Species>();
     }
 
     public class PeopleWrapper

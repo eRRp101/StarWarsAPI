@@ -5,12 +5,18 @@
 
 <PageTitle>Star Wars Characters</PageTitle>
 
-@if (_errorMessage != null)
+@if (_errorMessage != String.Empty)
 {
-    <div class="modal-sw-content">
-        @_errorMessage
+    isModalVisible = true;
+    <div class="modal-sw-overlay @(isModalVisible ? "show" : "")">
+        <div class="modal-sw-content">
+            <h2>Error</h2>
+            <span>@_errorMessage</span>
+            <button class="btn-sw" @onclick="CloseModal">Close</button>
+        </div>
     </div>
 }
+
 
 <div class="component-background">
 
@@ -50,27 +56,27 @@
                 </th>
                 <th>
                     <div class="header-container-sw">
-                        <span class="fs-5">Height</span>
+                        <span class="fs-5">Species</span>
                         <div class="search-field-sw">
                             <input class="form-control"
                             type="text"
-                            @bind="_inputFilterHeight"
+                            @bind="_inputSpeciesName"
                             @bind:event="oninput"
                             @bind:after="ApplyFiltersAsync"
-                            placeholder="Search by height..." />
+                            placeholder="Search by species..." />
                         </div>
                     </div>
                 </th>
                 <th>
                     <div class="header-container-sw">
-                        <span class="fs-5">Mass</span>
+                        <span class="fs-5">Planet</span>
                         <div class="search-field-sw">
                             <input class="form-control"
                             type="text"
-                            @bind="_inputFilterMass"
+                            @bind="_inputPlanetName"
                             @bind:event="oninput"
                             @bind:after="ApplyFiltersAsync"
-                            placeholder="Search by mass..." />
+                            placeholder="Search by planet..." />
                         </div>
                     </div>
                 </th>
@@ -81,14 +87,14 @@
             {
                 <tr @onclick="() => ToggleDetails(person)">
                     <td>@person.Name</td>
-                    <td>@person.Height</td>
-                    <td>@person.Mass</td>
+                    @* Nogle gange returnerer species et Name for human, andre gange ikke. Prøver finde ud af hvorfor, samt refactor syntax *@
+                    <td>@(person.Species != null && person.Species.Any() ? string.Join(", ", person.Species.Select(s => s.Name)) : "Human")</td> @* *@
+                    <td>@person.Planet.Name</td>
                 </tr>
             }
         </tbody>
     </table>
 
-    <!-- Modal Overlay -->
     <div class="modal-sw-overlay @(isModalVisible ? "show" : "")" @onclick="CloseModal">
         <div class="modal-sw-content" @onclick:stopPropagation>
             <h2>@(_selectedModalPerson?.Name ?? "")</h2>
@@ -96,15 +102,14 @@
             {
                 <div>
                     <img src="@_selectedModalPerson.ImgSrc" />
-                    <hr/>
-                    <span>Species:     @_selectedModalPerson</span><br />
-                    <span>Homeworld:     @_selectedModalPerson</span><br />
-
-                    <span>Gender:     @_selectedModalPerson.Gender</span><br />
+                    <hr />
+                    <span>Species: @(_selectedModalPerson.Species?.FirstOrDefault()?.Name ?? "Unknown")</span><br />
+                    <span>Homeworld: @(_selectedModalPerson.Planet.Name ?? "Unknown")</span><br />
+                    <span>Gender: @_selectedModalPerson.Gender</span><br />
                     <span>Birthyear: @_selectedModalPerson.BirthYear</span><br />
                     <span>Height: @_selectedModalPerson.Height</span><br />
                     <span>Mass: @_selectedModalPerson.Mass</span><br />
-                    <hr/>
+                    <hr />
                 </div>
             }
         </div>
@@ -181,25 +186,26 @@
 
     //Filters
     private string? _inputFilterName;
-    private string? _inputFilterHeight;
-    private string? _inputFilterMass;
+    private string? _inputSpeciesName;
+    private string? _inputPlanetName;
 
     private void ClearFilters()
     {
         _inputFilterName = string.Empty;
-        _inputFilterHeight = string.Empty;
-        _inputFilterMass = string.Empty;
+        _inputSpeciesName = string.Empty;
+        _inputPlanetName = string.Empty;
         _filteredPersonList = new List<People>(_personList);
 
         LoadPage(CurrentPage);
     }
 
+    // Debouncing :-)
     private async Task ApplyFiltersAsync()
     {
+        IsFiltering = true;
         await _debounceService.DebounceAsync(async () =>
         {
-            IsFiltering = true;
-            _filteredPersonList = await _swapiService.FilterPeopleList(_personList, _inputFilterName, _inputFilterHeight, _inputFilterMass);
+            _filteredPersonList = await _swapiService.FilterPeopleList(_personList, _inputFilterName, _inputSpeciesName, _inputPlanetName);
             CurrentPage = 1;
             LoadPage(CurrentPage);
         });

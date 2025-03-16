@@ -35,7 +35,7 @@ namespace BlazorApp2.Services
                         {
                             if (!string.IsNullOrEmpty(person.HomeworldUrl))
                             {
-                                person.Homeworld = await FetchPlanetAsync(person.HomeworldUrl);
+                                person.Planet = await FetchPlanetAsync(person.HomeworldUrl);
                             }
 
                             if (person.SpeciesUrls != null && person.SpeciesUrls.Any())
@@ -53,6 +53,9 @@ namespace BlazorApp2.Services
                 while (!string.IsNullOrEmpty(nextPageUrl));
 
                 await MapImagesToList(peopleList);
+
+                ////test exception handling 
+                //throw new JsonException();
             }
             catch (HttpRequestException ex)
             {
@@ -84,23 +87,25 @@ namespace BlazorApp2.Services
         private async Task<List<Species>> FetchSpeciesAsync(List<string> urls)
         {
             var speciesList = new List<Species>();
+
             foreach (var url in urls)
             {
                 var response = await _httpClient.GetAsync(url);
                 response.EnsureSuccessStatusCode();
                 var json = await response.Content.ReadAsStringAsync();
                 speciesList.Add(JsonSerializer.Deserialize<Species>(json));
+
             }
             return speciesList;
         }
 
-        public async Task<List<People>> FilterPeopleList(List<People> peopleList, string nameFilter, string heightFilter, string massFilter)
+        public async Task<List<People>> FilterPeopleList(List<People> peopleList, string nameFilter, string speciesFilter, string planetFilter)
         {
             List<People> person = peopleList;
 
             var trimmedNameFilter = nameFilter?.Trim().ToLower() ?? string.Empty;
-            var trimmedHeightFilter = heightFilter?.Trim().ToLower() ?? string.Empty;
-            var trimmedMassFilter = massFilter?.Trim().ToLower() ?? string.Empty;
+            var trimmedSpeciesFilter = speciesFilter?.Trim().ToLower() ?? string.Empty;
+            var trimmedPlanetFilter = planetFilter?.Trim().ToLower() ?? string.Empty;
 
             var filteredList = person.AsQueryable();
 
@@ -108,14 +113,17 @@ namespace BlazorApp2.Services
             {
                 filteredList = filteredList.Where(p => p.Name.ToLower().Contains(trimmedNameFilter));
             }
-            if (!string.IsNullOrEmpty(trimmedHeightFilter))
+
+            if (!string.IsNullOrEmpty(trimmedSpeciesFilter))
             {
-                filteredList = filteredList.Where(p => p.Height.ToLower().Contains(trimmedHeightFilter));
+                filteredList = filteredList.Where(p => p.Species != null && p.Species.Any(s => s.Name != null && s.Name.ToLower().Contains(trimmedSpeciesFilter)));
             }
-            if (!string.IsNullOrEmpty(trimmedMassFilter))
+
+            if (!string.IsNullOrEmpty(trimmedPlanetFilter))
             {
-                filteredList = filteredList.Where(p => p.Mass.ToLower().Contains(trimmedMassFilter));
+                filteredList = filteredList.Where(p => p.Planet != null && p.Planet.Name != null && p.Planet.Name.ToLower().Contains(trimmedPlanetFilter));
             }
+
             return filteredList.ToList();
         }
 
