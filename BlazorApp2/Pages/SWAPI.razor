@@ -202,9 +202,9 @@
     // Debouncing :-)
     private async Task ApplyFiltersAsync()
     {
-        IsFiltering = true;
         await _debounceService.DebounceAsync(async () =>
         {
+            IsFiltering = true;
             _filteredPersonList = await _swapiService.FilterPeopleList(_personList, _inputFilterName, _inputSpeciesName, _inputPlanetName);
             CurrentPage = 1;
             LoadPage(CurrentPage);
