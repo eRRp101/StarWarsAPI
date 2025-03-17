@@ -5,10 +5,9 @@ namespace BlazorApp2.Model
     public class Planet
     {
         [JsonPropertyName("name")]
-
         public string Name { get; set; }
-        [JsonPropertyName("population")]
 
+        [JsonPropertyName("population")]
         public string Population { get; set; }
         [JsonPropertyName("climate")]
 
@@ -16,8 +15,8 @@ namespace BlazorApp2.Model
         [JsonPropertyName("gravity")]
 
         public string Gravity { get; set; }
-        [JsonPropertyName("terrain")]
 
+        [JsonPropertyName("terrain")]
         public string Terrain { get; set; }
 
     }

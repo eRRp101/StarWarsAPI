@@ -1,5 +1,5 @@
 ﻿@page "/SWAPI"
-@inject ISWAPIService _swapiService;
+@inject ISwApiService _SwApiService;
 @inject IDebounceService _debounceService;
 @inject ApiExceptionService _apiExceptionService;
 
@@ -23,8 +23,8 @@
     @* --- Header Glowing+SubText as Loading Indicators --- *@
     <div class="loader-container">
         <div class="title-loader">
-            <h1 class="@((isLoading || IsFiltering) ? "loading-title" : "h1-sw")">Star Wars Characters</h1>
-            <div class="loading-text">
+            <h1 class="@((isLoading || IsFiltering) ? "loading-title" : "h1-sw") user-select-none">Star Wars Characters</h1>
+            <div class="loading-text user-select-none">
                 @if (isLoading || IsFiltering)
                 {
                     @(isLoading ? "Fetching Data..." : "Filtering Data...")
@@ -38,64 +38,69 @@
     <div class="mb-3 ">
         <button class="btn-sw" @onclick="ClearFilters">Reset all filters</button>
     </div>
-    <table class="star-wars-table" style="width: 100%; table-layout: fixed">
-        <thead>
-            <tr>
-                <th>
-                    <div class="header-container-sw">
-                        <span class="fs-5">Name</span>
-                        <div class="search-field-sw">
-                            <input class="form-control"
-                            type="text"
-                            @bind="_inputFilterName"
-                            @bind:event="oninput"
-                            @bind:after="ApplyFiltersAsync"
-                            placeholder="Search by name..." />
-                        </div>
-                    </div>
-                </th>
-                <th>
-                    <div class="header-container-sw">
-                        <span class="fs-5">Species</span>
-                        <div class="search-field-sw">
-                            <input class="form-control"
-                            type="text"
-                            @bind="_inputSpeciesName"
-                            @bind:event="oninput"
-                            @bind:after="ApplyFiltersAsync"
-                            placeholder="Search by species..." />
-                        </div>
-                    </div>
-                </th>
-                <th>
-                    <div class="header-container-sw">
-                        <span class="fs-5">Planet</span>
-                        <div class="search-field-sw">
-                            <input class="form-control"
-                            type="text"
-                            @bind="_inputPlanetName"
-                            @bind:event="oninput"
-                            @bind:after="ApplyFiltersAsync"
-                            placeholder="Search by planet..." />
-                        </div>
-                    </div>
-                </th>
-            </tr>
-        </thead>
-        <tbody>
-            @foreach (var person in _paginatedPersonList)
-            {
-                <tr @onclick="() => ToggleDetails(person)">
-                    <td>@person.Name</td>
-                    @* Nogle gange returnerer species et Name for human, andre gange ikke. Prøver finde ud af hvorfor, samt refactor syntax *@
-                    <td>@(person.Species != null && person.Species.Any() ? string.Join(", ", person.Species.Select(s => s.Name)) : "Human")</td> @* *@
-                    <td>@person.Planet.Name</td>
-                </tr>
-            }
-        </tbody>
-    </table>
 
-    <div class="modal-sw-overlay @(isModalVisible ? "show" : "")" @onclick="CloseModal">
+    <div class="star-wars-table-container user-select-none">
+        <table class="star-wars-table" style="width: 100%; table-layout: fixed">
+            <thead>
+                <tr>
+                    <th>
+                        <div class="header-container-sw">
+                            <span class="fs-5">Name</span>
+                            <div class="search-field-sw">
+                                <input class="form-control"
+                                       type="text"
+                                       @bind="_inputFilterName"
+                                       @bind:event="oninput"
+                                       @bind:after="ApplyFiltersAsync"
+                                       placeholder="Search by name..." />
+                            </div>
+                        </div>
+                    </th>
+                    <th>
+                        <div class="header-container-sw">
+                            <span class="fs-5">Species</span>
+                            <div class="search-field-sw">
+                                <input class="form-control"
+                                       type="text"
+                                       @bind="_inputSpeciesName"
+                                       @bind:event="oninput"
+                                       @bind:after="ApplyFiltersAsync"
+                                       placeholder="Search by species..." />
+                            </div>
+                        </div>
+                    </th>
+                    <th>
+                        <div class="header-container-sw">
+                            <span class="fs-5 ">Planet</span>
+                            <div class="search-field-sw">
+                                <input class="form-control"
+                                       type="text"
+                                       @bind="_inputPlanetName"
+                                       @bind:event="oninput"
+                                       @bind:after="ApplyFiltersAsync"
+                                       placeholder="Search by planet..." />
+                            </div>
+                        </div>
+                    </th>
+                </tr>
+            </thead>
+
+            <tbody>
+                @foreach (var person in _paginatedPersonList)
+                {
+                    <tr @onclick="() => ToggleDetails(person)">
+                        <td>@person.Name</td>
+                        @* Nogle gange returnerer species et Name for human, andre gange ikke. Prøver finde ud af hvorfor, samt refactor syntax *@
+                        <td>@(person.Species != null && person.Species.Any() ? string.Join(", ", person.Species.Select(s => s.Name)) : "Human")</td> @* *@
+                        <td>@person.Planet.Name</td>
+                    </tr>
+                }
+            </tbody>
+
+        </table>
+    </div>
+
+    <div class="modal-sw-overlay user-select-none @(isModalVisible ? "show" : "")" @onclick="CloseModal">
         <div class="modal-sw-content" @onclick:stopPropagation>
             <h2>@(_selectedModalPerson?.Name ?? "")</h2>
             @if (_selectedModalPerson != null)
@@ -117,7 +122,7 @@
 
     <div class="text-center m-3">
         <button class="btn-sw" @onclick="PreviousPage" disabled="@(!CanGoToPreviousPage)">Previous</button>
-        <span class="mx-2 text-white">Page @CurrentPage of @TotalPages</span>
+        <span class="mx-2 text-white user-select-none">Page @CurrentPage of @TotalPages</span>
         <button class="btn-sw" @onclick="NextPage" disabled="@(!CanGoToNextPage)">Next</button>
     </div>
     <hr />
@@ -205,7 +210,7 @@
         await _debounceService.DebounceAsync(async () =>
         {
             IsFiltering = true;
-            _filteredPersonList = await _swapiService.FilterPeopleList(_personList, _inputFilterName, _inputSpeciesName, _inputPlanetName);
+            _filteredPersonList = await _SwApiService.FilterPeopleList(_personList, _inputFilterName, _inputSpeciesName, _inputPlanetName);
             CurrentPage = 1;
             LoadPage(CurrentPage);
         });
@@ -223,7 +228,7 @@
             isLoading = true;
             StateHasChanged();
             // Task.Delay(2000); //loading animation display
-            _personList = await _swapiService.GetPeopleList();
+            _personList = await _SwApiService.GetPeopleList();
             _filteredPersonList = new List<People>(_personList);
             _debounceService = new DebounceService();
             LoadPage(CurrentPage);
