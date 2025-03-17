@@ -18,7 +18,6 @@ namespace BlazorApp2.Services
         {
             var peopleList = new List<People>();
             string nextPageUrl = _apiBaseUrl + "people";
-
             try
             {
                 do
@@ -33,6 +32,7 @@ namespace BlazorApp2.Services
                     {
                         foreach (var person in peopleWrapper.Results)
                         {
+                            
                             if (!string.IsNullOrEmpty(person.HomeworldUrl))
                             {
                                 person.Planet = await GetPlanetAsync(person.HomeworldUrl);
@@ -40,9 +40,15 @@ namespace BlazorApp2.Services
 
                             if (person.SpeciesUrls != null && person.SpeciesUrls.Any())
                             {
+
                                 person.Species = await GetSpeciesAsync(person.SpeciesUrls);
                             }
-
+                            else
+                            {
+                                //For some reason, only for humans, MOST contain empty SpeciesUrls. Some don't. 
+                                //Swapi Documentation claims Luke Skywalker contains species URL - but postman or hoppscotch confirm he doesn't.
+                                person.Species = new List<Species> { new Species { Name = "Human" } };
+                            }
                             peopleList.Add(person);
                         }
                     }

@@ -28,7 +28,6 @@
             </div>
         </div>
     </div>
-
     <hr />
 
     <div class="mb-3 ">
@@ -44,11 +43,11 @@
                             <span class="fs-5">Name</span>
                             <div class="search-field-sw">
                                 <input class="form-control"
-                                       type="text"
-                                       @bind="_inputFilterName"
-                                       @bind:event="oninput"
-                                       @bind:after="ApplyFiltersAsync"
-                                       placeholder="Search by name..." />
+                                type="text"
+                                @bind="_inputFilterName"
+                                @bind:event="oninput"
+                                @bind:after="ApplyFiltersAsync"
+                                placeholder="Search by name..." />
                             </div>
                         </div>
                     </th>
@@ -57,11 +56,11 @@
                             <span class="fs-5">Species</span>
                             <div class="search-field-sw">
                                 <input class="form-control"
-                                       type="text"
-                                       @bind="_inputSpeciesName"
-                                       @bind:event="oninput"
-                                       @bind:after="ApplyFiltersAsync"
-                                       placeholder="Search by species..." />
+                                type="text"
+                                @bind="_inputSpeciesName"
+                                @bind:event="oninput"
+                                @bind:after="ApplyFiltersAsync"
+                                placeholder="Search by species..." />
                             </div>
                         </div>
                     </th>
@@ -70,11 +69,11 @@
                             <span class="fs-5 ">Planet</span>
                             <div class="search-field-sw">
                                 <input class="form-control"
-                                       type="text"
-                                       @bind="_inputPlanetName"
-                                       @bind:event="oninput"
-                                       @bind:after="ApplyFiltersAsync"
-                                       placeholder="Search by planet..." />
+                                type="text"
+                                @bind="_inputPlanetName"
+                                @bind:event="oninput"
+                                @bind:after="ApplyFiltersAsync"
+                                placeholder="Search by planet..." />
                             </div>
                         </div>
                     </th>
@@ -86,8 +85,7 @@
                 {
                     <tr @onclick="() => ToggleDetails(person)">
                         <td>@person.Name</td>
-                        @* Nogle gange returnerer species et Name for human, andre gange ikke. Prøver finde ud af hvorfor, samt refactor syntax *@
-                        <td>@(person.Species != null && person.Species.Any() ? string.Join(", ", person.Species.Select(s => s.Name)) : "Human")</td> @* *@
+                        <td>@string.Join(", ", person.Species.Select(s => s.Name))</td>
                         <td>@person.Planet.Name</td>
                     </tr>
                 }
@@ -158,6 +156,9 @@
 
     private void CloseModal()
     {
+        _errorMessage = string.Empty;
+        isLoading = false;
+        IsFiltering = false;
         isModalVisible = false;
         _selectedModalPerson = null;
     }

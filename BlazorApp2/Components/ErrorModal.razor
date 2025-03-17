@@ -1,9 +1,11 @@
-﻿<div class="modal-sw-overlay @(IsVisible ? "show" : "")">
-    <div class="modal-sw-content">
+﻿<div class="modal-sw-overlay @(IsVisible ? "show" : "")" @onclick="CloseModal">
+    <div class="modal-sw-content" @onclick:stopPropagation>
         <h2 class="text-center">Error</h2>
         <span>@ErrorMessage</span>
         <hr />
-        <button class="btn-sw align-content-center gap-2" @onclick="CloseModal">Close</button>
+        <div class="text-center">
+            <button class="btn-sw align-content-center gap-2" @onclick="CloseModal">Close</button>
+        </div>
     </div>
 </div>
 
@@ -19,6 +21,7 @@
 
     private void CloseModal()
     {
+        ErrorMessage = string.Empty;
         IsVisible = false;
         OnClose.InvokeAsync();
     }
