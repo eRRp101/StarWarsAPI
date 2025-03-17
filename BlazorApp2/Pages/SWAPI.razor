@@ -1,4 +1,5 @@
 ﻿@page "/SWAPI"
+@using BlazorApp2.Components;
 @inject ISwApiService _SwApiService;
 @inject IDebounceService _debounceService;
 @inject ApiExceptionService _apiExceptionService;
@@ -8,15 +9,8 @@
 @if (_errorMessage != String.Empty)
 {
     isModalVisible = true;
-    <div class="modal-sw-overlay @(isModalVisible ? "show" : "")">
-        <div class="modal-sw-content">
-            <h2>Error</h2>
-            <span>@_errorMessage</span>
-            <button class="btn-sw" @onclick="CloseModal">Close</button>
-        </div>
-    </div>
+    <ErrorModal IsVisible="isModalVisible" ErrorMessage="@_errorMessage" OnClose="CloseModal"/>
 }
-
 
 <div class="component-background">
 
@@ -34,7 +28,9 @@
             </div>
         </div>
     </div>
+
     <hr />
+
     <div class="mb-3 ">
         <button class="btn-sw" @onclick="ClearFilters">Reset all filters</button>
     </div>
@@ -100,25 +96,7 @@
         </table>
     </div>
 
-    <div class="modal-sw-overlay user-select-none @(isModalVisible ? "show" : "")" @onclick="CloseModal">
-        <div class="modal-sw-content" @onclick:stopPropagation>
-            <h2>@(_selectedModalPerson?.Name ?? "")</h2>
-            @if (_selectedModalPerson != null)
-            {
-                <div>
-                    <img src="@_selectedModalPerson.ImgSrc" />
-                    <hr />
-                    <span>Species: @(_selectedModalPerson.Species?.FirstOrDefault()?.Name ?? "Unknown")</span><br />
-                    <span>Homeworld: @(_selectedModalPerson.Planet.Name ?? "Unknown")</span><br />
-                    <span>Gender: @_selectedModalPerson.Gender</span><br />
-                    <span>Birthyear: @_selectedModalPerson.BirthYear</span><br />
-                    <span>Height: @_selectedModalPerson.Height</span><br />
-                    <span>Mass: @_selectedModalPerson.Mass</span><br />
-                    <hr />
-                </div>
-            }
-        </div>
-    </div>
+    <PersonModal Person="_selectedModalPerson" IsVisible="isModalVisible" OnClose="CloseModal" />
 
     <div class="text-center m-3">
         <button class="btn-sw" @onclick="PreviousPage" disabled="@(!CanGoToPreviousPage)">Previous</button>
@@ -163,7 +141,7 @@
         }
     }
 
-    //Modal
+    //Modal State
     private People _selectedModalPerson = null;
     private bool isModalVisible = false;
 

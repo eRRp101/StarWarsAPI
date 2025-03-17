@@ -19,8 +19,8 @@ namespace BlazorApp2.Services
         {
             return ex switch
             {
-                HttpRequestException => "Failed to connect to the API. Please check endpoint or your internet connection.",
-                JsonException => "Failed to process the API response. The data may be invalid.",
+                HttpRequestException => "Failed to connect to the API. Please check your internet connection.",
+                JsonException => "Failed to process the API response. Please check endpoint or your internet connection.",
                 ApiServiceException => ex.Message,
                 _ => "An unexpected error occurred. Please try again later."
             };
