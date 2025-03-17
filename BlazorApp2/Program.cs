@@ -5,7 +5,7 @@ var builder = WebApplication.CreateBuilder(args);
 // Add services to the container.
 builder.Services.AddRazorPages();
 builder.Services.AddServerSideBlazor();
-builder.Services.AddSingleton<ISWAPIService, SWAPIService>();
+builder.Services.AddSingleton<ISwApiService, SwApiService>();
 builder.Services.AddSingleton<IDebounceService, DebounceService>();
 builder.Services.AddSingleton<ApiExceptionService>();
 

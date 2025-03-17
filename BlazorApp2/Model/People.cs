@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Text.Json.Serialization;
-using static System.Net.WebRequestMethods;
 
 namespace BlazorApp2.Model
 {

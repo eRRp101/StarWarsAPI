@@ -3,13 +3,13 @@ using System.Text.Json;
 
 namespace BlazorApp2.Services
 {
-    public class SWAPIService : ISWAPIService
+    public class SwApiService : ISwApiService
     {
         private static readonly HttpClient _httpClient = new HttpClient();
         private readonly string _apiBaseUrl = "https://swapi.dev/api/";
         private readonly ApiExceptionService _apiExceptionService;
 
-        public SWAPIService(ApiExceptionService apiExceptionService)
+        public SwApiService(ApiExceptionService apiExceptionService)
         {
             _apiExceptionService = apiExceptionService;
         }
@@ -26,8 +26,8 @@ namespace BlazorApp2.Services
                     var response = await _httpClient.GetAsync(nextPageUrl);
                     response.EnsureSuccessStatusCode(); // Throws HttpRequestException on failure
 
-                    var responseBody = await response.Content.ReadAsStringAsync();
-                    var peopleWrapper = JsonSerializer.Deserialize<PeopleWrapper>(responseBody);
+                    var responseStream = await response.Content.ReadAsStreamAsync();
+                    var peopleWrapper = await JsonSerializer.DeserializeAsync<PeopleWrapper>(responseStream);
 
                     if (peopleWrapper?.Results != null)
                     {
@@ -35,12 +35,12 @@ namespace BlazorApp2.Services
                         {
                             if (!string.IsNullOrEmpty(person.HomeworldUrl))
                             {
-                                person.Planet = await FetchPlanetAsync(person.HomeworldUrl);
+                                person.Planet = await GetPlanetAsync(person.HomeworldUrl);
                             }
 
                             if (person.SpeciesUrls != null && person.SpeciesUrls.Any())
                             {
-                                person.Species = await FetchSpeciesAsync(person.SpeciesUrls);
+                                person.Species = await GetSpeciesAsync(person.SpeciesUrls);
                             }
 
                             peopleList.Add(person);
@@ -76,7 +76,7 @@ namespace BlazorApp2.Services
             return peopleList;
         }
 
-        private async Task<Planet> FetchPlanetAsync(string url)
+        private async Task<Planet> GetPlanetAsync(string url)
         {
             var response = await _httpClient.GetAsync(url);
             response.EnsureSuccessStatusCode();
@@ -84,7 +84,7 @@ namespace BlazorApp2.Services
             return JsonSerializer.Deserialize<Planet>(json);
         }
 
-        private async Task<List<Species>> FetchSpeciesAsync(List<string> urls)
+        private async Task<List<Species>> GetSpeciesAsync(List<string> urls)
         {
             var speciesList = new List<Species>();
 
