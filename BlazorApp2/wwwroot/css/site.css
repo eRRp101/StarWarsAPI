@@ -16,8 +16,13 @@
     background-color: rgba(0, 123, 255, 0.25);
 }
 
-/* Loading Animation */
-.loader-container {
+.modal-info-container {
+    display: flex;
+    gap: 2px;
+}
+
+    /* Loading Animation */
+    .loader-container {
     height: 120px;
     display: flex;
     flex-direction: column;

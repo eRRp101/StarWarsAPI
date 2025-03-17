@@ -15,6 +15,5 @@ namespace BlazorApp2.Model
 
         [JsonPropertyName("language")]
         public string Language { get; set; }
-
     }
 }

@@ -6,12 +6,12 @@
             <div>
                 <img src="@Person.ImgSrc" />
                 <hr />
-                <span>Species: @(Person.Species?.FirstOrDefault()?.Name ?? "Unknown")</span><br />
-                <span>Homeworld: @(Person.Planet.Name ?? "Unknown")</span><br />
-                <span>Gender: @Person.Gender</span><br />
-                <span>Birthyear: @Person.BirthYear</span><br />
-                <span>Height: @Person.Height</span><br />
-                <span>Mass: @Person.Mass</span><br />
+                <span>Species |</span>  <span class="fw-bold">@(Person.Species?.FirstOrDefault()?.Name ?? "Unknown")</span><br />
+                <span>Homeworld |</span>  <span class="fw-bold"> @(Person.Planet.Name ?? "Unknown")</span><br />
+                <span>Gender |</span>  <span class="fw-bold"> @Person.Gender</span><br />
+                <span>Birthyear |</span>  <span class="fw-bold"> @Person.BirthYear</span><br />
+                <span>Height |</span>  <span class="fw-bold"> @Person.Height</span><br />
+                <span>Mass |</span>  <span class="fw-bold"> @Person.Mass</span><br />
                 <hr />
             </div>
         }
