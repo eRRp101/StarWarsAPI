@@ -47,15 +47,12 @@ namespace BlazorApp2.Services
                         }
                     }
 
-                    // Get the next page URL
                     nextPageUrl = peopleWrapper?.NextPage;
                 }
                 while (!string.IsNullOrEmpty(nextPageUrl));
 
                 await MapImagesToList(peopleList);
 
-                ////test exception handling 
-                //throw new JsonException();
             }
             catch (HttpRequestException ex)
             {

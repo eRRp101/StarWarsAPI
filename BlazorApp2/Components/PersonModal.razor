@@ -1,0 +1,36 @@
+﻿<div class="modal-sw-overlay user-select-none @(IsVisible ? "show" : "")" @onclick="CloseModal">
+    <div class="modal-sw-content" @onclick:stopPropagation>
+        <h2>@(Person?.Name ?? "")</h2>
+        @if (Person != null)
+        {
+            <div>
+                <img src="@Person.ImgSrc" />
+                <hr />
+                <span>Species: @(Person.Species?.FirstOrDefault()?.Name ?? "Unknown")</span><br />
+                <span>Homeworld: @(Person.Planet.Name ?? "Unknown")</span><br />
+                <span>Gender: @Person.Gender</span><br />
+                <span>Birthyear: @Person.BirthYear</span><br />
+                <span>Height: @Person.Height</span><br />
+                <span>Mass: @Person.Mass</span><br />
+                <hr />
+            </div>
+        }
+    </div>
+</div>
+
+@code {
+    [Parameter]
+    public People Person { get; set; }
+
+    [Parameter]
+    public bool IsVisible { get; set; }
+
+    [Parameter]
+    public EventCallback OnClose { get; set; }
+
+    private void CloseModal()
+    {
+        IsVisible = false;
+        OnClose.InvokeAsync();
+    }
+}

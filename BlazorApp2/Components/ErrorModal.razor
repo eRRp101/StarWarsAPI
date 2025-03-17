@@ -1,0 +1,25 @@
+﻿<div class="modal-sw-overlay @(IsVisible ? "show" : "")">
+    <div class="modal-sw-content">
+        <h2 class="text-center">Error</h2>
+        <span>@ErrorMessage</span>
+        <hr />
+        <button class="btn-sw align-content-center gap-2" @onclick="CloseModal">Close</button>
+    </div>
+</div>
+
+@code {
+    [Parameter]
+    public bool IsVisible { get; set; }
+
+    [Parameter]
+    public string ErrorMessage { get; set; }
+
+    [Parameter]
+    public EventCallback OnClose { get; set; }
+
+    private void CloseModal()
+    {
+        IsVisible = false;
+        OnClose.InvokeAsync();
+    }
+}
