@@ -14,4 +14,4 @@
 # built with
 - ASP.NET WebAPI .NET 8 + Swagger
 - Blazor .NET 8
-- CSS/Tailwind
+- HTML/CSS/Tailwind
