@@ -11,7 +11,7 @@
 <img width="1617" height="823" alt="image" src="https://github.com/user-attachments/assets/a7d6e696-8a75-4689-9b42-7bab2bf3e29f" />
 
 
-# built with
+# Built with
 - ASP.NET WebAPI .NET 8 + Swagger
 - Blazor .NET 8
 - HTML/CSS/Tailwind
