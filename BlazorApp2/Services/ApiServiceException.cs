@@ -1,4 +1,4 @@
-﻿namespace BlazorApp2.Services
+﻿namespace StarWarsAPI.Services
 {
     public class ApiServiceException : Exception
     {

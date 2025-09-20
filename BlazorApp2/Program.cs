@@ -1,4 +1,4 @@
-using BlazorApp2.Services;
+using StarWarsAPI.Services;
 
 var builder = WebApplication.CreateBuilder(args);
 

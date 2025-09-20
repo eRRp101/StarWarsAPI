@@ -1,6 +1,6 @@
 ﻿using System.Text.Json.Serialization;
 
-namespace BlazorApp2.Model
+namespace StarWarsAPI.Model
 {
     public class Planet
     {

@@ -1,6 +1,6 @@
-﻿using BlazorApp2.Model;
+﻿using StarWarsAPI.Model;
 
-namespace BlazorApp2.Services
+namespace StarWarsAPI.Services
 {
     public interface ISwApiService
     {

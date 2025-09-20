@@ -1,7 +1,7 @@
-﻿using BlazorApp2.Model;
+﻿using StarWarsAPI.Model;
 using System.Text.Json;
 
-namespace BlazorApp2.Services
+namespace StarWarsAPI.Services
 {
     public class SwApiService : ISwApiService
     {
