@@ -3,7 +3,8 @@
 
 
 # Reactive frontend design with working search fields
-<img width="823" height="419" alt="image" src="https://github.com/user-attachments/assets/5bfb652b-2b30-49a7-b574-32b3568f20ac" />
+<img width="1617" height="845" alt="image" src="https://github.com/user-attachments/assets/adf503e9-d659-4cf0-9dfc-d7d0ee8ae49e" />
+
 
 
 # Click row to get image and more info!
@@ -13,4 +14,4 @@
 # built with
 - ASP.NET WebAPI .NET 8 + Swagger
 - Blazor .NET 8
-- CSS
+- CSS/Tailwind
